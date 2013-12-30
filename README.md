@@ -6,7 +6,7 @@ Package GoSharky will offer support for [GrooveShark](http://grooveshark.com/) i
 Installation
 -------
 
-go get github.com/maistora/GoSharky
+    go get github.com/maistora/GoSharky
 
 TODO
 -------
