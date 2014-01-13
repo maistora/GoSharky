@@ -10,255 +10,256 @@ import (
 // Song metadata should be spread across all 3 params. albumIDs[0] should 
 // be the respective albumID for songIDs[0] and same with artistIDs.
 // Note: You must provide a sessionID with this method.
-func addUserLibrarySongs(songIDs, albumIDs, artistIDs string) {
+func AddUserLibrarySongs(songIDs, albumIDs, artistIDs string) {
 	// TODO impelemnt
 }
 
 // Get user library songs. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func getUserLibrarySongs(limit, page int) {
+func GetUserLibrarySongs(limit, page int) []struc.Song {
 	// TODO impelemnt
 }
 
 // Add songs to a user's library. Songs should be an array of objects 
 // representing each song with keys: songID, albumID, artistID, trackNum.
 // Note: You must provide a sessionID with this method.
-func addUserLibrarySongsEx(songs string) {
+func AddUserLibrarySongsEx(songs string) {
 	// TODO impelemnt
 }
 
 // Remove songs from a user's library.
+// Returns true if everything is OK.
 // Note: You must provide a sessionID with this method.
-func removeUserLibrarySongs(songIDs, albumIDs, artistIDs string) {
+func RemoveUserLibrarySongs(songIDs, albumIDs, artistIDs string) bool {
 	// TODO impelemnt
 }
 
 // Get subscribed playlists of the logged-in user. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func getUserPlaylistsSubscribed() {
+func GetUserPlaylistsSubscribed() []struc.Playlist {
 	// TODO impelemnt
 }
 
 // Get playlists of the logged-in user. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func getUserPlaylists(limit int) {
+func GetUserPlaylists(limit int) []struc.Playlist {
 	// TODO impelemnt
 }
 
 // Get user favorite songs. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func getUserFavoriteSongs(limit int) {
+func GetUserFavoriteSongs(limit int) []struc.Song {
 	// TODO impelemnt
 }
 
 // Remove a set of favorite songs for a user. Must provide a logged-in sessionID.
 // Note: You must provide a sessionID with this method.
-func removeUserFavoriteSongs(songIDs string) {
+func RemoveUserFavoriteSongs(songIDs string) {
 	// TODO impelemnt
 }
 
 // Logout a user using an established session.
 // Note: You must provide a sessionID with this method.
-func logout() {
+func Logout() {
 	// TODO impelemnt
 }
 
 // Authenticate a user using a token from http://grooveshark.com/auth/. 
 // See Overview for documentation.
 // Note: You must provide a sessionID with this method.
-func authenticateToken(token string) {
+func AuthenticateToken(token string) {
 	// TODO impelemnt
 }
 
 // Get logged-in user info from sessionID
 // Note: You must provide a sessionID with this method.
-func getUserInfo() {
+func GetUserInfo() struc.UserInfo {
 	// TODO impelemnt
 }
 
 // Get logged-in user subscription info. Returns type of subscription
 // and either dateEnd or recurring.
 // Note: You must provide a sessionID with this method.
-func getUserSubscriptionDetails() {
+func GetUserSubscriptionDetails() struc.UserSubscriptionInfo {
 	// TODO impelemnt
 }
 
 // Add a favorite song for a user. Must provide a logged-in sessionID.
 // Note: You must provide a sessionID with this method.
-func addUserFavoriteSong(songID int) {
+func AddUserFavoriteSong(songID int) {
 	// TODO impelemnt
 }
 
 // Subscribe to a playlist for the logged-in user. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func subscribePlaylist(playlistID int) {
+func SubscribePlaylist(playlistID int) {
 	// TODO impelemnt
 }
 
 // Unsubscribe from a playlist for the logged-in user. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func unsubscribePlaylist(playlistID int) {
+func UnsubscribePlaylist(playlistID int) {
 	// TODO impelemnt
 }
 
 // Get country from IP. If an IP is omitted, it will use the request's IP.
-func getCountry(ip string) {
+func GetCountry(ip string) struc.Country {
 	// TODO impelemnt
 }
 
 // Get playlist information. To get songs as well, call getPlaylist.
-func getPlaylistInfo(playlistID string) {
+func GetPlaylistInfo(playlistID string) struc.PlaylistInfo {
 	// TODO impelemnt
 }
 
 // Get a subset of today's popular songs, from the Grooveshark popular billboard.
-func getPopularSongsToday(limit int) {
+func GetPopularSongsToday(limit int) struc.Song {
 	// TODO impelemnt
 }
 
 // Get a subset of this month's popular songs, from the Grooveshark popular billboard.
-func getPopularSongsMonth(limit int) {
+func GetPopularSongsMonth(limit int) struc.Song {
 	// TODO impelemnt
 }
 
 // Useful for testing if the service is up. Returns "Hello, World" in various languages.
-func pingService() {
+func PingService() string {
 	// TODO impelemnt
 }
 
 // Describe service methods
-func getServiceDescription() {
+func GetServiceDescription() struc.ServiceDescription {
 	// TODO impelemnt
 }
 
 // Undeletes a playlist.
 // Note: You must provide a sessionID with this method.
-func undeletePlaylist(playlistID int) {
+func UndeletePlaylist(playlistID int) {
 	// TODO impelemnt
 }
 
 // Deletes a playlist.
 // Note: You must provide a sessionID with this method.
-func deletePlaylist(playlistID int) {
+func DeletePlaylist(playlistID int) {
 	// TODO impelemnt
 }
 
 // Get songs on a playlist. Use getPlaylist instead.
-func getPlaylistSongs(playlistID string, limit int) {
+func GetPlaylistSongs(playlistID string, limit int) []struc.Song {
 	// TODO impelemnt
 }
 
 // Get playlist info and songs.
-func getPlaylist(playlistID string, limit int) {
+func GetPlaylist(playlistID string, limit int) struc.Playlist {
 	// TODO impelemnt
 }
 
 // Set playlist songs, overwrites any already saved
 // Note: You must provide a sessionID with this method.
-func setPlaylistSongs(playlistID int, songIDs string) {
+func SetPlaylistSongs(playlistID int, songIDs string) {
 	// TODO impelemnt
 }
 
 // Create a new playlist, optionally adding songs to it.
 // Note: You must provide a sessionID with this method.
-func createPlaylist(name, songIDs string) {
+func CreatePlaylist(name, songIDs string) {
 	// TODO impelemnt
 }
 
 // Renames a playlist.
 // Note: You must provide a sessionID with this method.
-func renamePlaylist(playlistID int, name string) {
+func RenamePlaylist(playlistID int, name string) {
 	// TODO impelemnt
 }
 
 // Authenticate a user using an established session, a login and an md5 of their password.
 // Note: You must provide a sessionID with this method.
-func authenticate(login, password string) {
+func Authenticate(login, password string) {
 	// TODO impelemnt
 }
 
 // Get userID from username
-func getUserIDFromUsername(username string) {
+func GetUserIDFromUsername(username string) string {
 	// TODO impelemnt
 }
 
 // Get meta-data information about one or more albums
-func getAlbumsInfo(albumIDs string) {
+func GetAlbumsInfo(albumIDs string) []struc.AlbumInfo {
 	// TODO impelemnt
 }
 
 // Get songs on an album. Returns all songs, verified and unverified
-func getAlbumSongs(albumID, limit int) {
+func GetAlbumSongs(albumID, limit int) []struc.Song {
 	// TODO impelemnt
 }
 
 // Get meta-data information about one or more artists
-func getArtistsInfo(artistIDs string) {
+func GetArtistsInfo(artistIDs string) []struc.ArtistInfo {
 	// TODO impelemnt
 }
 
 // Get information about a song or multiple songs.
 // The songID(s) should always be passed in as an array.
-func getSongsInfo(songIDs string) {
+func GetSongsInfo(songIDs string) []struc.SongInfo {
 	// TODO impelemnt
 }
 
 // Check if an album exists
-func getDoesAlbumExist(albumID int) {
+func GetDoesAlbumExist(albumID int) bool {
 	// TODO impelemnt
 }
 
 // Check if a song exists
-func getDoesSongExist(songID int) {
+func GetDoesSongExist(songID int) bool {
 	// TODO impelemnt
 }
 
 // Check if an artist exists
-func getDoesArtistExist(artistID int) {
+func GetDoesArtistExist(artistID int) bool {
 	// TODO impelemnt
 }
 
 // Authenticate a user (login) using an established session.
 // Please use the authenticate method instead.
 // Note: You must provide a sessionID with this method.
-func authenticateUser(username, token string) {
+func AuthenticateUser(username, token string) {
 	// TODO impelemnt
 }
 
 // Get an artist's verified albums
-func getArtistVerifiedAlbums(artistID int) {
+func GetArtistVerifiedAlbums(artistID int) []struc.Album {
 	// TODO impelemnt
 }
 
 // Get an artist's albums, verified and unverified
-func getArtistAlbums(artistID int) {
+func GetArtistAlbums(artistID int) []struc.Album {
 	// TODO impelemnt
 }
 
 // Get 100 popular songs for an artist
-func getArtistPopularSongs(artistID int) {
+func GetArtistPopularSongs(artistID int) []struc.Song {
 	// TODO impelemnt
 }
 
 // ================= Search =================
 
 // Perform a playlist search.
-func getPlaylistSearchResults(query string, limit int) {
+func GetPlaylistSearchResults(query string, limit int) []struc.Playlist {
 	// TODO impelemnt
 }
 
 // Perform an album search.
-func getAlbumSearchResults(query string, limit int) {
+func GetAlbumSearchResults(query string, limit int) []struc.Album {
 	// TODO impelemnt
 }
 
 // Perform a song search.
-func getSongSearchResults(query string, country struc.Country, limit, offset int) {
+func GetSongSearchResults(query string, country struc.Country, limit, offset int) []struc.Song {
 	// TODO impelemnt
 }
 
 // Perform an artist search.
-func getArtistSearchResults(query string, limit int) {
+func GetArtistSearchResults(query string, limit int) []struc.Artist {
 	// TODO impelemnt
 }
 
@@ -266,55 +267,55 @@ func getArtistSearchResults(query string, limit int) {
 
 // Get stream key, ID, etc. from songID. Requires country object obtained from getCountry
 // Note: You must provide a sessionID with this method.
-func getStreamKeyStreamServer(songID int, country struc.Country, lowBitrate bool) {
+func GetStreamKeyStreamServer(songID int, country struc.Country, lowBitrate bool) struc.StreamDetails {
 	// TODO impelemnt
 }
 
 // ================= URLS =================
 
 // Get Grooveshark URL for tinysong base 62.
-func getSongURLFromTinysongBase62(base62 string) {
+func GetSongURLFromTinysongBase62(base62 string) struc.SongUrl {
 	// TODO impelemnt
 }
 
 // Get playable song URL from songID
-func getSongURLFromSongID(songID int) {
+func GetSongURLFromSongID(songID int) struc.SongUrl {
 	// TODO impelemnt
 }
 
 // Get playlist URL from playlistID
-func getPlaylistURLFromPlaylistID(playlistID int) {
+func GetPlaylistURLFromPlaylistID(playlistID int) struc.PlaylistUrl {
 	// TODO impelemnt
 }
 
 // Get a song's Tinysong.com url.
-func getTinysongURLFromSongID(songID int) {
+func GetTinysongURLFromSongID(songID int) struc.TinysongUrl {
 	// TODO impelemnt
 }
 
 // ================= Users (no auth) =================
 
 // Get playlists created by a userID. Does not require an authenticated session.
-func getUserPlaylistsByUserID(userID, limit int) {
+func GetUserPlaylistsByUserID(userID, limit int) []struc.Playlist {
 	// TODO impelemnt
 }
 
 // Get user info from userID
-func getUserInfoFromUserID(userID int) {
+func GetUserInfoFromUserID(userID int) struc.UserInfo {
 	// TODO impelemnt
 }
 
 // ================= Recs =================
 
 // Get similar artist for a given artistID.
-func getSimilarArtists(artistID, limit, page int) {
+func GetSimilarArtists(artistID, limit, page int) []struc.Artist {
 	// TODO impelemnt
 }
 
 // ================= Sessions =================
 
 // Start a session
-func startSession() {
+func StartSession() {
 	// TODO impelemnt
 }
 
@@ -322,20 +323,20 @@ func startSession() {
 
 // Gets a trial for an application and the provided uniqueID or logged in user.
 // Note: You must provide a sessionID with this method.
-func getTrialInfo(uniqueID string) {
+func GetTrialInfo(uniqueID string) struc.TrialInfo {
 	// TODO impelemnt
 }
 
 // Starts a trial for a user bound to your application and the provided uniqueID.
 // Note: You must provide a sessionID with this method.
-func createTrial(uniqueID string) {
+func CreateTrial(uniqueID string) {
 	// TODO impelemnt
 }
 
 // ================= Autocomplete =================
 
 // Autocomplete search. Type parameter is 'music', 'playlist', or 'user'. Returns an array of words.
-func getAutocompleteSearchResults(query, type string, limit int) {
+func GetAutocompleteSearchResults(query, type string, limit int) []string {
 	// TODO impelemnt
 }
 
@@ -345,13 +346,13 @@ func getAutocompleteSearchResults(query, type string, limit int) {
 // Requires country object obtained from getCountry and a logged-in
 // sessionID from a Grooveshark Anywhere subscriber.
 // Note: You must provide a sessionID with this method.
-func getSubscriberStreamKey(songID int, country struc.Country, lowBitrate bool, uniqueID string) {
+func GetSubscriberStreamKey(songID int, country struc.Country, lowBitrate bool, uniqueID string) struc.StreamKey {
 	// TODO impelemnt
 }
 
 // Mark a song as having been played for greater than or equal to 30 seconds.
 // Note: You must provide a sessionID with this method.
-func markStreamKeyOver30Secs(streamKey string, streamServerID int, uniqueID string) {
+func MarkStreamKeyOver30Secs(streamKey string, streamServerID int, uniqueID string) {
 	// TODO impelemnt
 }
 
@@ -360,67 +361,67 @@ func markStreamKeyOver30Secs(streamKey string, streamServerID int, uniqueID stri
 // Mark a song as complete (played for greater than or equal to 30 seconds,
 // and having reached the last second either through seeking or normal playback).
 // Note: You must provide a sessionID with this method.
-func markSongComplete(songID int, streamKey string, streamServerID int, autoplayState struc.AutoplayState) {
+func MarkSongComplete(songID int, streamKey string, streamServerID int, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // ================= Autoplay =================
 
 // Grab a relevant song for autoplay
-func getAutoplaySong(autoplayState struc.AutoplayState) {
+func GetAutoplaySong(autoplayState struc.AutoplayState) struc.Song {
 	// TODO impelemnt
 }
 
 // Gets a list of tags (stations)
-func getAutoplayTags() {
+func GetAutoplayTags() []struc.Tag {
 	// TODO impelemnt
 }
 
 // Start autoplay using a tag and grab a relevant song
-func startAutoplayTag(tagID int) {
+func StartAutoplayTag(tagID int) {
 	// TODO impelemnt
 }
 
 // Start autoplay and grab a relevant song
 // TODO check if the params are right
-func startAutoplay(artistIDs, songIDs []string) {
+func StartAutoplay(artistIDs, songIDs []string) {
 	// TODO impelemnt
 }
 
 // Remove a vote up for a song
-func removeVoteUpAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
+func RemoveVoteUpAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // Vote up a song
-func voteUpAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
+func VoteUpAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // Remove a song from the autoplay state
-func removeSongFromAutoplay(song struc.Song, autoplayState struc.AutoplayState) {
+func RemoveSongFromAutoplay(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // Add a song to the autoplay state
-func addSongToAutoplay(song struc.Song, autoplayState struc.AutoplayState) {
+func AddSongToAutoplay(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // Vote down a song
-func voteDownAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
-	// TODO impelemnt
+func VoteDownAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
+	// TODO imApelemnt
 }
 
 // Remove a vote down for a song
-func removeVoteDownAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
+func RemoveVoteDownAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // ================= Tinysong =================
 
 // Get Grooveshark songID for tinysong base 62.
-func getSongIDFromTinysongBase62(base62 string) {
+func GetSongIDFromTinysongBase62(base62 string) string {
 	// TODO impelemnt
 }
 
@@ -431,6 +432,6 @@ func getSongIDFromTinysongBase62(base62 string) {
 // in the middle. The username can be blank or 5-32 characters.
 // Passwords must be between 5 and 32 characters.
 // Note: You must provide a sessionID with this method.
-func registerUser(emailAddress, password, fullName, username, gender, birthDate string) {
+func RegisterUser(emailAddress, password, fullName, username, gender, birthDate string) {
 	// TODO impelemnt
 }
