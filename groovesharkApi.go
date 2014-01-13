@@ -2,6 +2,9 @@
 // Grooveshark API Extractor
 package main
 
+import (
+	"./struc"
+)
 
 // Use addUserLibrarySongsEx instead. Add songs to a user's library.
 // Song metadata should be spread across all 3 params. albumIDs[0] should 
@@ -250,7 +253,7 @@ func getAlbumSearchResults(query string, limit int) {
 }
 
 // Perform a song search.
-func getSongSearchResults(query string, country object, limit, offset int) {
+func getSongSearchResults(query string, country struc.Country, limit, offset int) {
 	// TODO impelemnt
 }
 
@@ -263,7 +266,7 @@ func getArtistSearchResults(query string, limit int) {
 
 // Get stream key, ID, etc. from songID. Requires country object obtained from getCountry
 // Note: You must provide a sessionID with this method.
-func getStreamKeyStreamServer(songID int, country object, lowBitrate bool) {
+func getStreamKeyStreamServer(songID int, country struc.Country, lowBitrate bool) {
 	// TODO impelemnt
 }
 
@@ -342,7 +345,7 @@ func getAutocompleteSearchResults(query, type string, limit int) {
 // Requires country object obtained from getCountry and a logged-in
 // sessionID from a Grooveshark Anywhere subscriber.
 // Note: You must provide a sessionID with this method.
-func getSubscriberStreamKey(songID int, country object, lowBitrate bool, uniqueID string) {
+func getSubscriberStreamKey(songID int, country struc.Country, lowBitrate bool, uniqueID string) {
 	// TODO impelemnt
 }
 
@@ -357,14 +360,14 @@ func markStreamKeyOver30Secs(streamKey string, streamServerID int, uniqueID stri
 // Mark a song as complete (played for greater than or equal to 30 seconds,
 // and having reached the last second either through seeking or normal playback).
 // Note: You must provide a sessionID with this method.
-func markSongComplete(songID int, streamKey string, streamServerID int, autoplayState object) {
+func markSongComplete(songID int, streamKey string, streamServerID int, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // ================= Autoplay =================
 
 // Grab a relevant song for autoplay
-func getAutoplaySong(autoplayState object) {
+func getAutoplaySong(autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
@@ -379,37 +382,38 @@ func startAutoplayTag(tagID int) {
 }
 
 // Start autoplay and grab a relevant song
-func startAutoplay(artistIDs, songIDs object) {
+// TODO check if the params are right
+func startAutoplay(artistIDs, songIDs []string) {
 	// TODO impelemnt
 }
 
 // Remove a vote up for a song
-func removeVoteUpAutoplaySong(song, autoplayState object) {
+func removeVoteUpAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // Vote up a song
-func voteUpAutoplaySong(song, autoplayState object) {
+func voteUpAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // Remove a song from the autoplay state
-func removeSongFromAutoplay(song, autoplayState object) {
+func removeSongFromAutoplay(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // Add a song to the autoplay state
-func addSongToAutoplay(song, autoplayState object) {
+func addSongToAutoplay(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // Vote down a song
-func voteDownAutoplaySong(song, autoplayState object) {
+func voteDownAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // Remove a vote down for a song
-func removeVoteDownAutoplaySong(song, autoplayState object) {
+func removeVoteDownAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
