@@ -1,12 +1,12 @@
 package main
 
 import (
-	"goSharky"
+	"sharky"
 	"GoSharky/struc"
 )
 
 func main() {
-	sharky := new(goSharky.GoSharky)
+	sharky := new(sharky.Sharky)
 	sharky.Authenticate("username", md5("password"))
 	songs := sharky.GetPopularSongMonth(10)
 	country := sharky.GetCountry("17.235.72.103")

@@ -1,12 +1,12 @@
 // This file was auto-generated from the
 // Grooveshark API Extractor
-package goSharky
+package sharky
 
 import (
 	"./struc"
 )
 
-type GoSharky struct {
+type Sharky struct {
 	// TODO impl
 }
 
@@ -14,256 +14,256 @@ type GoSharky struct {
 // Song metadata should be spread across all 3 params. albumIDs[0] should 
 // be the respective albumID for songIDs[0] and same with artistIDs.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) AddUserLibrarySongs(songIDs, albumIDs, artistIDs string) {
+func (sharky *Sharky) AddUserLibrarySongs(songIDs, albumIDs, artistIDs string) {
 	// TODO impelemnt
 }
 
 // Get user library songs. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) GetUserLibrarySongs(limit, page int) []struc.Song {
+func (sharky *Sharky) GetUserLibrarySongs(limit, page int) []struc.Song {
 	// TODO impelemnt
 }
 
 // Add songs to a user's library. Songs should be an array of objects 
 // representing each song with keys: songID, albumID, artistID, trackNum.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) AddUserLibrarySongsEx(songs string) {
+func (sharky *Sharky) AddUserLibrarySongsEx(songs string) {
 	// TODO impelemnt
 }
 
 // Remove songs from a user's library.
 // Returns true if everything is OK.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) RemoveUserLibrarySongs(songIDs, albumIDs, artistIDs string) bool {
+func (sharky *Sharky) RemoveUserLibrarySongs(songIDs, albumIDs, artistIDs string) bool {
 	// TODO impelemnt
 }
 
 // Get subscribed playlists of the logged-in user. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) GetUserPlaylistsSubscribed() []struc.Playlist {
+func (sharky *Sharky) GetUserPlaylistsSubscribed() []struc.Playlist {
 	// TODO impelemnt
 }
 
 // Get playlists of the logged-in user. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) GetUserPlaylists(limit int) []struc.Playlist {
+func (sharky *Sharky) GetUserPlaylists(limit int) []struc.Playlist {
 	// TODO impelemnt
 }
 
 // Get user favorite songs. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) GetUserFavoriteSongs(limit int) []struc.Song {
+func (sharky *Sharky) GetUserFavoriteSongs(limit int) []struc.Song {
 	// TODO impelemnt
 }
 
 // Remove a set of favorite songs for a user. Must provide a logged-in sessionID.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) RemoveUserFavoriteSongs(songIDs string) {
+func (sharky *Sharky) RemoveUserFavoriteSongs(songIDs string) {
 	// TODO impelemnt
 }
 
 // Logout a user using an established session.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) Logout() {
+func (sharky *Sharky) Logout() {
 	// TODO impelemnt
 }
 
 // Authenticate a user using a token from http://grooveshark.com/auth/. 
 // See Overview for documentation.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) AuthenticateToken(token string) {
+func (sharky *Sharky) AuthenticateToken(token string) {
 	// TODO impelemnt
 }
 
 // Get logged-in user info from sessionID
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) GetUserInfo() struc.UserInfo {
+func (sharky *Sharky) GetUserInfo() struc.UserInfo {
 	// TODO impelemnt
 }
 
 // Get logged-in user subscription info. Returns type of subscription
 // and either dateEnd or recurring.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) GetUserSubscriptionDetails() struc.UserSubscriptionInfo {
+func (sharky *Sharky) GetUserSubscriptionDetails() struc.UserSubscriptionInfo {
 	// TODO impelemnt
 }
 
 // Add a favorite song for a user. Must provide a logged-in sessionID.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) AddUserFavoriteSong(songID int) {
+func (sharky *Sharky) AddUserFavoriteSong(songID int) {
 	// TODO impelemnt
 }
 
 // Subscribe to a playlist for the logged-in user. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) SubscribePlaylist(playlistID int) {
+func (sharky *Sharky) SubscribePlaylist(playlistID int) {
 	// TODO impelemnt
 }
 
 // Unsubscribe from a playlist for the logged-in user. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) UnsubscribePlaylist(playlistID int) {
+func (sharky *Sharky) UnsubscribePlaylist(playlistID int) {
 	// TODO impelemnt
 }
 
 // Get country from IP. If an IP is omitted, it will use the request's IP.
-func (sharky *GoSharky) GetCountry(ip string) struc.Country {
+func (sharky *Sharky) GetCountry(ip string) struc.Country {
 	// TODO impelemnt
 }
 
 // Get playlist information. To get songs as well, call getPlaylist.
-func (sharky *GoSharky) GetPlaylistInfo(playlistID string) struc.PlaylistInfo {
+func (sharky *Sharky) GetPlaylistInfo(playlistID string) struc.PlaylistInfo {
 	// TODO impelemnt
 }
 
 // Get a subset of today's popular songs, from the Grooveshark popular billboard.
-func (sharky *GoSharky) GetPopularSongsToday(limit int) []struc.Song {
+func (sharky *Sharky) GetPopularSongsToday(limit int) []struc.Song {
 	// TODO impelemnt
 }
 
 // Get a subset of this month's popular songs, from the Grooveshark popular billboard.
-func (sharky *GoSharky) GetPopularSongsMonth(limit int) []struc.Song {
+func (sharky *Sharky) GetPopularSongsMonth(limit int) []struc.Song {
 	// TODO impelemnt
 }
 
 // Useful for testing if the service is up. Returns "Hello, World" in various languages.
-func (sharky *GoSharky) PingService() string {
+func (sharky *Sharky) PingService() string {
 	// TODO impelemnt
 }
 
 // Describe service methods
-func (sharky *GoSharky) GetServiceDescription() struc.ServiceDescription {
+func (sharky *Sharky) GetServiceDescription() struc.ServiceDescription {
 	// TODO impelemnt
 }
 
 // Undeletes a playlist.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) UndeletePlaylist(playlistID int) {
+func (sharky *Sharky) UndeletePlaylist(playlistID int) {
 	// TODO impelemnt
 }
 
 // Deletes a playlist.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) DeletePlaylist(playlistID int) {
+func (sharky *Sharky) DeletePlaylist(playlistID int) {
 	// TODO impelemnt
 }
 
 // Get songs on a playlist. Use getPlaylist instead.
-func (sharky *GoSharky) GetPlaylistSongs(playlistID string, limit int) []struc.Song {
+func (sharky *Sharky) GetPlaylistSongs(playlistID string, limit int) []struc.Song {
 	// TODO impelemnt
 }
 
 // Get playlist info and songs.
-func (sharky *GoSharky) GetPlaylist(playlistID string, limit int) struc.Playlist {
+func (sharky *Sharky) GetPlaylist(playlistID string, limit int) struc.Playlist {
 	// TODO impelemnt
 }
 
 // Set playlist songs, overwrites any already saved
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) SetPlaylistSongs(playlistID int, songIDs string) {
+func (sharky *Sharky) SetPlaylistSongs(playlistID int, songIDs string) {
 	// TODO impelemnt
 }
 
 // Create a new playlist, optionally adding songs to it.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) CreatePlaylist(name, songIDs string) {
+func (sharky *Sharky) CreatePlaylist(name, songIDs string) {
 	// TODO impelemnt
 }
 
 // Renames a playlist.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) RenamePlaylist(playlistID int, name string) {
+func (sharky *Sharky) RenamePlaylist(playlistID int, name string) {
 	// TODO impelemnt
 }
 
 // Authenticate a user using an established session, a login and an md5 of their password.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) Authenticate(login, password string) {
+func (sharky *Sharky) Authenticate(login, password string) {
 	// TODO impelemnt
 }
 
 // Get userID from username
-func (sharky *GoSharky) GetUserIDFromUsername(username string) string {
+func (sharky *Sharky) GetUserIDFromUsername(username string) string {
 	// TODO impelemnt
 }
 
 // Get meta-data information about one or more albums
-func (sharky *GoSharky) GetAlbumsInfo(albumIDs string) []struc.AlbumInfo {
+func (sharky *Sharky) GetAlbumsInfo(albumIDs string) []struc.AlbumInfo {
 	// TODO impelemnt
 }
 
 // Get songs on an album. Returns all songs, verified and unverified
-func (sharky *GoSharky) GetAlbumSongs(albumID, limit int) []struc.Song {
+func (sharky *Sharky) GetAlbumSongs(albumID, limit int) []struc.Song {
 	// TODO impelemnt
 }
 
 // Get meta-data information about one or more artists
-func (sharky *GoSharky) GetArtistsInfo(artistIDs string) []struc.ArtistInfo {
+func (sharky *Sharky) GetArtistsInfo(artistIDs string) []struc.ArtistInfo {
 	// TODO impelemnt
 }
 
 // Get information about a song or multiple songs.
 // The songID(s) should always be passed in as an array.
-func (sharky *GoSharky) GetSongsInfo(songIDs string) []struc.SongInfo {
+func (sharky *Sharky) GetSongsInfo(songIDs string) []struc.SongInfo {
 	// TODO impelemnt
 }
 
 // Check if an album exists
-func (sharky *GoSharky) GetDoesAlbumExist(albumID int) bool {
+func (sharky *Sharky) GetDoesAlbumExist(albumID int) bool {
 	// TODO impelemnt
 }
 
 // Check if a song exists
-func (sharky *GoSharky) GetDoesSongExist(songID int) bool {
+func (sharky *Sharky) GetDoesSongExist(songID int) bool {
 	// TODO impelemnt
 }
 
 // Check if an artist exists
-func (sharky *GoSharky) GetDoesArtistExist(artistID int) bool {
+func (sharky *Sharky) GetDoesArtistExist(artistID int) bool {
 	// TODO impelemnt
 }
 
 // Authenticate a user (login) using an established session.
 // Please use the authenticate method instead.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) AuthenticateUser(username, token string) {
+func (sharky *Sharky) AuthenticateUser(username, token string) {
 	// TODO impelemnt
 }
 
 // Get an artist's verified albums
-func (sharky *GoSharky) GetArtistVerifiedAlbums(artistID int) []struc.Album {
+func (sharky *Sharky) GetArtistVerifiedAlbums(artistID int) []struc.Album {
 	// TODO impelemnt
 }
 
 // Get an artist's albums, verified and unverified
-func (sharky *GoSharky) GetArtistAlbums(artistID int) []struc.Album {
+func (sharky *Sharky) GetArtistAlbums(artistID int) []struc.Album {
 	// TODO impelemnt
 }
 
 // Get 100 popular songs for an artist
-func (sharky *GoSharky) GetArtistPopularSongs(artistID int) []struc.Song {
+func (sharky *Sharky) GetArtistPopularSongs(artistID int) []struc.Song {
 	// TODO impelemnt
 }
 
 // ================= Search =================
 
 // Perform a playlist search.
-func (sharky *GoSharky) GetPlaylistSearchResults(query string, limit int) []struc.Playlist {
+func (sharky *Sharky) GetPlaylistSearchResults(query string, limit int) []struc.Playlist {
 	// TODO impelemnt
 }
 
 // Perform an album search.
-func (sharky *GoSharky) GetAlbumSearchResults(query string, limit int) []struc.Album {
+func (sharky *Sharky) GetAlbumSearchResults(query string, limit int) []struc.Album {
 	// TODO impelemnt
 }
 
 // Perform a song search.
-func (sharky *GoSharky) GetSongSearchResults(query string, country struc.Country, limit, offset int) []struc.Song {
+func (sharky *Sharky) GetSongSearchResults(query string, country struc.Country, limit, offset int) []struc.Song {
 	// TODO impelemnt
 }
 
 // Perform an artist search.
-func (sharky *GoSharky) GetArtistSearchResults(query string, limit int) []struc.Artist {
+func (sharky *Sharky) GetArtistSearchResults(query string, limit int) []struc.Artist {
 	// TODO impelemnt
 }
 
@@ -271,55 +271,55 @@ func (sharky *GoSharky) GetArtistSearchResults(query string, limit int) []struc.
 
 // Get stream key, ID, etc. from songID. Requires country object obtained from getCountry
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) GetStreamKeyStreamServer(songID int, country struc.Country, lowBitrate bool) struc.StreamDetails {
+func (sharky *Sharky) GetStreamKeyStreamServer(songID int, country struc.Country, lowBitrate bool) struc.StreamDetails {
 	// TODO impelemnt
 }
 
 // ================= URLS =================
 
 // Get Grooveshark URL for tinysong base 62.
-func (sharky *GoSharky) GetSongURLFromTinysongBase62(base62 string) struc.SongUrl {
+func (sharky *Sharky) GetSongURLFromTinysongBase62(base62 string) struc.SongUrl {
 	// TODO impelemnt
 }
 
 // Get playable song URL from songID
-func (sharky *GoSharky) GetSongURLFromSongID(songID int) struc.SongUrl {
+func (sharky *Sharky) GetSongURLFromSongID(songID int) struc.SongUrl {
 	// TODO impelemnt
 }
 
 // Get playlist URL from playlistID
-func (sharky *GoSharky) GetPlaylistURLFromPlaylistID(playlistID int) struc.PlaylistUrl {
+func (sharky *Sharky) GetPlaylistURLFromPlaylistID(playlistID int) struc.PlaylistUrl {
 	// TODO impelemnt
 }
 
 // Get a song's Tinysong.com url.
-func (sharky *GoSharky) GetTinysongURLFromSongID(songID int) struc.TinysongUrl {
+func (sharky *Sharky) GetTinysongURLFromSongID(songID int) struc.TinysongUrl {
 	// TODO impelemnt
 }
 
 // ================= Users (no auth) =================
 
 // Get playlists created by a userID. Does not require an authenticated session.
-func (sharky *GoSharky) GetUserPlaylistsByUserID(userID, limit int) []struc.Playlist {
+func (sharky *Sharky) GetUserPlaylistsByUserID(userID, limit int) []struc.Playlist {
 	// TODO impelemnt
 }
 
 // Get user info from userID
-func (sharky *GoSharky) GetUserInfoFromUserID(userID int) struc.UserInfo {
+func (sharky *Sharky) GetUserInfoFromUserID(userID int) struc.UserInfo {
 	// TODO impelemnt
 }
 
 // ================= Recs =================
 
 // Get similar artist for a given artistID.
-func (sharky *GoSharky) GetSimilarArtists(artistID, limit, page int) []struc.Artist {
+func (sharky *Sharky) GetSimilarArtists(artistID, limit, page int) []struc.Artist {
 	// TODO impelemnt
 }
 
 // ================= Sessions =================
 
 // Start a session
-func (sharky *GoSharky) StartSession() {
+func (sharky *Sharky) StartSession() {
 	// TODO impelemnt
 }
 
@@ -327,20 +327,20 @@ func (sharky *GoSharky) StartSession() {
 
 // Gets a trial for an application and the provided uniqueID or logged in user.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) GetTrialInfo(uniqueID string) struc.TrialInfo {
+func (sharky *Sharky) GetTrialInfo(uniqueID string) struc.TrialInfo {
 	// TODO impelemnt
 }
 
 // Starts a trial for a user bound to your application and the provided uniqueID.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) CreateTrial(uniqueID string) {
+func (sharky *Sharky) CreateTrial(uniqueID string) {
 	// TODO impelemnt
 }
 
 // ================= Autocomplete =================
 
 // Autocomplete search. Type parameter is 'music', 'playlist', or 'user'. Returns an array of words.
-func (sharky *GoSharky) GetAutocompleteSearchResults(query, type string, limit int) []string {
+func (sharky *Sharky) GetAutocompleteSearchResults(query, type string, limit int) []string {
 	// TODO impelemnt
 }
 
@@ -350,13 +350,13 @@ func (sharky *GoSharky) GetAutocompleteSearchResults(query, type string, limit i
 // Requires country object obtained from getCountry and a logged-in
 // sessionID from a Grooveshark Anywhere subscriber.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) GetSubscriberStreamKey(songID int, country struc.Country, lowBitrate bool, uniqueID string) struc.StreamKey {
+func (sharky *Sharky) GetSubscriberStreamKey(songID int, country struc.Country, lowBitrate bool, uniqueID string) struc.StreamKey {
 	// TODO impelemnt
 }
 
 // Mark a song as having been played for greater than or equal to 30 seconds.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) MarkStreamKeyOver30Secs(streamKey string, streamServerID int, uniqueID string) {
+func (sharky *Sharky) MarkStreamKeyOver30Secs(streamKey string, streamServerID int, uniqueID string) {
 	// TODO impelemnt
 }
 
@@ -365,67 +365,67 @@ func (sharky *GoSharky) MarkStreamKeyOver30Secs(streamKey string, streamServerID
 // Mark a song as complete (played for greater than or equal to 30 seconds,
 // and having reached the last second either through seeking or normal playback).
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) MarkSongComplete(songID int, streamKey string, streamServerID int, autoplayState struc.AutoplayState) {
+func (sharky *Sharky) MarkSongComplete(songID int, streamKey string, streamServerID int, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // ================= Autoplay =================
 
 // Grab a relevant song for autoplay
-func (sharky *GoSharky) GetAutoplaySong(autoplayState struc.AutoplayState) struc.Song {
+func (sharky *Sharky) GetAutoplaySong(autoplayState struc.AutoplayState) struc.Song {
 	// TODO impelemnt
 }
 
 // Gets a list of tags (stations)
-func (sharky *GoSharky) GetAutoplayTags() []struc.Tag {
+func (sharky *Sharky) GetAutoplayTags() []struc.Tag {
 	// TODO impelemnt
 }
 
 // Start autoplay using a tag and grab a relevant song
-func (sharky *GoSharky) StartAutoplayTag(tagID int) {
+func (sharky *Sharky) StartAutoplayTag(tagID int) {
 	// TODO impelemnt
 }
 
 // Start autoplay and grab a relevant song
 // TODO check if the params are right
-func (sharky *GoSharky) StartAutoplay(artistIDs, songIDs []string) {
+func (sharky *Sharky) StartAutoplay(artistIDs, songIDs []string) {
 	// TODO impelemnt
 }
 
 // Remove a vote up for a song
-func (sharky *GoSharky) RemoveVoteUpAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
+func (sharky *Sharky) RemoveVoteUpAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // Vote up a song
-func (sharky *GoSharky) VoteUpAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
+func (sharky *Sharky) VoteUpAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // Remove a song from the autoplay state
-func (sharky *GoSharky) RemoveSongFromAutoplay(song struc.Song, autoplayState struc.AutoplayState) {
+func (sharky *Sharky) RemoveSongFromAutoplay(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // Add a song to the autoplay state
-func (sharky *GoSharky) AddSongToAutoplay(song struc.Song, autoplayState struc.AutoplayState) {
+func (sharky *Sharky) AddSongToAutoplay(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // Vote down a song
-func (sharky *GoSharky) VoteDownAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
+func (sharky *Sharky) VoteDownAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO imApelemnt
 }
 
 // Remove a vote down for a song
-func (sharky *GoSharky) RemoveVoteDownAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
+func (sharky *Sharky) RemoveVoteDownAutoplaySong(song struc.Song, autoplayState struc.AutoplayState) {
 	// TODO impelemnt
 }
 
 // ================= Tinysong =================
 
 // Get Grooveshark songID for tinysong base 62.
-func (sharky *GoSharky) GetSongIDFromTinysongBase62(base62 string) string {
+func (sharky *Sharky) GetSongIDFromTinysongBase62(base62 string) string {
 	// TODO impelemnt
 }
 
@@ -436,6 +436,6 @@ func (sharky *GoSharky) GetSongIDFromTinysongBase62(base62 string) string {
 // in the middle. The username can be blank or 5-32 characters.
 // Passwords must be between 5 and 32 characters.
 // Note: You must provide a sessionID with this method.
-func (sharky *GoSharky) RegisterUser(emailAddress, password, fullName, username, gender, birthDate string) {
+func (sharky *Sharky) RegisterUser(emailAddress, password, fullName, username, gender, birthDate string) {
 	// TODO impelemnt
 }
