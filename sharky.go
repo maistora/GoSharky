@@ -6,6 +6,8 @@ package main
 import (
 	"./struc"
 	"bytes"
+	"crypto/hmac"
+	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -16,7 +18,9 @@ import (
 // Get your own KEY and SECTER here http://developers.grooveshark.com/api
 const KEY = ""
 const SECRET = ""
-const API_URL = "https://api.grooveshark.com/ws3.php?sig=" + SECRET
+const API_HOST = "https://api.grooveshark.com"
+const API_ENDPOIT = "/ws3.php"
+const SIG_GET_KEY = "?sig="
 
 type RequestData struct {
 	Method     string            `json:"method"`
@@ -37,19 +41,29 @@ func generateRequestData(method, sessionID string, params map[string]string) *Re
 	return data
 }
 
-func generateSignature() {
+func generateSignature(postData, secret []byte) string {
+	mac := hmac.New(md5.New, secret)
+	mac.Write(postData)
+	signature := fmt.Sprintf("%x", mac.Sum(nil))
 
+	return signature
+}
+
+func generateApiURL(sig string) string {
+	return API_HOST + API_ENDPOIT + SIG_GET_KEY + sig
 }
 
 func main() {
 	params := make(map[string]string)
 	reqData := generateRequestData("startSession", "", params)
-
 	buf, _ := json.Marshal(&reqData)
-	fmt.Println(string(buf))
+	signature := generateSignature(buf, []byte(SECRET))
+	url := generateApiURL(signature)
+	fmt.Println(url)
 	body := bytes.NewReader(buf)
-	r, _ := http.Post(API_URL, "application/json", body)
+	r, _ := http.Post(url, "application/json;charset=utf-8", body)
 	response, _ := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
 
 	fmt.Println(string(response))
 }
