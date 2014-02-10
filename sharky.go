@@ -13,44 +13,66 @@ import (
 	"net/url"
 )
 
+// Get your own KEY and SECTER here http://developers.grooveshark.com/api
 const KEY = ""
 const SECRET = ""
-const API_URL = "http://api.grooveshark.com/ws3.php?sig=" + SECRET
+const API_URL = "https://api.grooveshark.com/ws3.php?sig=" + SECRET
 
 type RequestData struct {
-	method     string
-	parameters map[string]string
-	header     map[string]string
+	Method     string            `json:"method"`
+	Parameters map[string]string `json:"parameters"`
+	Header     map[string]string `json:"header"`
 }
 
 func generateRequestData(method, sessionID string, params map[string]string) *RequestData {
 	data := new(RequestData)
-	data.method = method
-	data.parameters = params
+	data.Method = method
+	data.Parameters = params
 
 	header := make(map[string]string)
 	header["wsKey"] = KEY
 	header["sessionID"] = sessionID
-	data.header = header
+	data.Header = header
 
 	return data
+}
+
+func generateSignature() {
+
 }
 
 func main() {
 	params := make(map[string]string)
 	reqData := generateRequestData("startSession", "", params)
-	var requestData RequestData
 
-	buf, _ := json.Marshal(reqData)
-	fmt.Println(reqData)
-	unBuf := json.Unmarshal(buf, &requestData)
-	fmt.Println(unBuf)
-	body := bytes.NewBuffer(buf)
-	fmt.Println(body)
+	buf, _ := json.Marshal(&reqData)
+	fmt.Println(string(buf))
+	body := bytes.NewReader(buf)
 	r, _ := http.Post(API_URL, "application/json", body)
 	response, _ := ioutil.ReadAll(r.Body)
+
 	fmt.Println(string(response))
 }
+
+/*
+func Request(method, url string, httpBody io.Reader) {
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, httpBody)
+	req.Close = true
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := client.Do(req)
+	if err != nil {
+		// whatever
+	}
+	defer resp.Body.Close()
+
+	response, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		// Whatever
+	}
+	fmt.Println(response)
+}
+*/
 
 type Sharky struct {
 	// TODO impl
