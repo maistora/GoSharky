@@ -28,6 +28,11 @@ type RequestData struct {
 	Header     map[string]string `json:"header"`
 }
 
+type Response struct {
+	Header map[string]interface{} `json:"header"`
+	Result map[string]interface{} `json:"result"`
+}
+
 func generateRequestData(method, sessionID string, params map[string]string) *RequestData {
 	data := new(RequestData)
 	data.Method = method
@@ -65,7 +70,11 @@ func main() {
 	response, _ := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 
+	var resp Response
 	fmt.Println(string(response))
+	json.Unmarshal(response, &resp)
+	fmt.Println(resp.Header["hostname"])
+	fmt.Println(resp.Result["success"])
 }
 
 /*
