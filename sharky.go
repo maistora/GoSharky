@@ -18,9 +18,12 @@ import (
 // Get your own KEY and SECTER here http://developers.grooveshark.com/api
 const KEY = ""
 const SECRET = ""
-const API_HOST = "https://api.grooveshark.com"
+const API_HOST = "api.grooveshark.com"
 const API_ENDPOIT = "/ws3.php"
 const SIG_GET_KEY = "?sig="
+const HTTPS = "https://"
+const HTTP = "http://"
+const CONTENT_TYPE = "application/json;charset=utf-8"
 
 type RequestData struct {
 	Method     string            `json:"method"`
@@ -54,8 +57,25 @@ func generateSignature(postData, secret []byte) string {
 	return signature
 }
 
-func generateApiURL(sig string) string {
-	return API_HOST + API_ENDPOIT + SIG_GET_KEY + sig
+func generateApiURL(sig string, useHttps bool) string {
+	protocol := getProtocol(useHttps)
+	return protocol + API_HOST + API_ENDPOIT + SIG_GET_KEY + sig
+}
+
+func getProtocol(useHttps bool) string {
+	if useHttps {
+		return HTTPS
+	} else {
+		return HTTP
+	}
+}
+
+func isEmpty(value string) bool {
+	if value != nil && strings.Trim(value) != "" {
+		return false
+	} else {
+		return true
+	}
 }
 
 func main() {
@@ -75,6 +95,26 @@ func main() {
 	json.Unmarshal(response, &resp)
 	fmt.Println(resp.Header["hostname"])
 	fmt.Println(resp.Result["success"])
+}
+
+func makeCall(method string, params map[string]string, resultKey string, sessionId string, useHttps bool) string {
+	reqData := generateRequestData(method, sessionId, params)
+	buf, _ := json.Marshal(&reqData)
+	signature := generateSignature(buf, []byte(SECRET))
+	url := generateApiURL(signature, useHttps)
+	body := bytes.NewReader(buf)
+	r, _ := http.Post(url, CONTENT_TYPE, body)
+	response, _ := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+
+	var resp Response
+	json.Unmarshal(response, &resp)
+
+	if isEmpty(resultKey) {
+		return string(resp.Result)
+	} else {
+		return resp.Result[resultKey]
+	}
 }
 
 /*
