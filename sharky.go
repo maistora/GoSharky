@@ -16,8 +16,8 @@ import (
 )
 
 // Get your own KEY and SECTER here http://developers.grooveshark.com/api
-const KEY = "golang_nikolay"
-const SECRET = "3a27a148229e9daceb45e263646b8d8b"
+const KEY = ""
+const SECRET = ""
 const API_HOST = "api.grooveshark.com"
 const API_ENDPOIT = "/ws3.php"
 const SIG_GET_KEY = "?sig="
