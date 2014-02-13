@@ -12,12 +12,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
+	"strings"
 )
 
 // Get your own KEY and SECTER here http://developers.grooveshark.com/api
-const KEY = ""
-const SECRET = ""
+const KEY = "golang_nikolay"
+const SECRET = "3a27a148229e9daceb45e263646b8d8b"
 const API_HOST = "api.grooveshark.com"
 const API_ENDPOIT = "/ws3.php"
 const SIG_GET_KEY = "?sig="
@@ -39,7 +39,11 @@ type Response struct {
 func generateRequestData(method, sessionID string, params map[string]string) *RequestData {
 	data := new(RequestData)
 	data.Method = method
-	data.Parameters = params
+	if params == nil || len(params) == 0 {
+		data.Parameters = make(map[string]string)
+	} else {
+		data.Parameters = params
+	}
 
 	header := make(map[string]string)
 	header["wsKey"] = KEY
@@ -49,6 +53,8 @@ func generateRequestData(method, sessionID string, params map[string]string) *Re
 	return data
 }
 
+// The signature is generated via HMAC using MD5 and the
+// secret provided by Grooveshark team.
 func generateSignature(postData, secret []byte) string {
 	mac := hmac.New(md5.New, secret)
 	mac.Write(postData)
@@ -57,51 +63,32 @@ func generateSignature(postData, secret []byte) string {
 	return signature
 }
 
-func generateApiURL(sig string, useHttps bool) string {
-	protocol := getProtocol(useHttps)
+// Build the entire URL to the API. For some calls HTTPS
+// protocol is not mandatory.
+func generateApiURL(sig, protocol string) string {
 	return protocol + API_HOST + API_ENDPOIT + SIG_GET_KEY + sig
 }
 
-func getProtocol(useHttps bool) string {
-	if useHttps {
-		return HTTPS
-	} else {
-		return HTTP
-	}
-}
-
+// Util method to check empty values
 func isEmpty(value string) bool {
-	if value != nil && strings.Trim(value) != "" {
-		return false
-	} else {
+	if len(strings.Trim(value, " ")) == 0 {
 		return true
+	} else {
+		return false
 	}
 }
 
 func main() {
-	params := make(map[string]string)
-	reqData := generateRequestData("startSession", "", params)
-	buf, _ := json.Marshal(&reqData)
-	signature := generateSignature(buf, []byte(SECRET))
-	url := generateApiURL(signature)
-	fmt.Println(url)
-	body := bytes.NewReader(buf)
-	r, _ := http.Post(url, "application/json;charset=utf-8", body)
-	response, _ := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
-
-	var resp Response
-	fmt.Println(string(response))
-	json.Unmarshal(response, &resp)
-	fmt.Println(resp.Header["hostname"])
-	fmt.Println(resp.Result["success"])
+	sharky := new(Sharky)
+	sharky.StartSession()
+	fmt.Println(sharky.Session)
 }
 
-func makeCall(method string, params map[string]string, resultKey string, sessionId string, useHttps bool) string {
+func makeCall(method string, params map[string]string, sessionId, protocol string) map[string]interface{} {
 	reqData := generateRequestData(method, sessionId, params)
 	buf, _ := json.Marshal(&reqData)
 	signature := generateSignature(buf, []byte(SECRET))
-	url := generateApiURL(signature, useHttps)
+	url := generateApiURL(signature, protocol)
 	body := bytes.NewReader(buf)
 	r, _ := http.Post(url, CONTENT_TYPE, body)
 	response, _ := ioutil.ReadAll(r.Body)
@@ -110,36 +97,11 @@ func makeCall(method string, params map[string]string, resultKey string, session
 	var resp Response
 	json.Unmarshal(response, &resp)
 
-	if isEmpty(resultKey) {
-		return string(resp.Result)
-	} else {
-		return resp.Result[resultKey]
-	}
+	return resp.Result
 }
-
-/*
-func Request(method, url string, httpBody io.Reader) {
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, httpBody)
-	req.Close = true
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := client.Do(req)
-	if err != nil {
-		// whatever
-	}
-	defer resp.Body.Close()
-
-	response, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		// Whatever
-	}
-	fmt.Println(response)
-}
-*/
 
 type Sharky struct {
-	// TODO impl
-	// session field is needed
+	Session string
 }
 
 // Use addUserLibrarySongsEx instead. Add songs to a user's library.
@@ -491,23 +453,10 @@ func (sharky *Sharky) GetSimilarArtists(artistID, limit, page int) []struc.Artis
 
 // Start a session
 func (sharky *Sharky) StartSession() {
-	// TODO impelemnt
-
-	// {"method":'addUserFavoriteSong",'parameters":{"songID":30547543},"header":{"wsKey":'key","sessionID":'df8fec35811a6b240808563d9f72fa2'}}
-
-	values := make(url.Values)
-	values.Set("method", "startSession")
-	values.Set("parameters", "{}")
-	values.Set("header", "{\"wsKey\":\"golang_nikolay\"}")
-	r, err := http.PostForm("http://api.grooveshark.com/ws3.php?sig=3a27a148229e9daceb45e263646b8d8b", values)
-	if err != nil {
-		fmt.Printf("error posting stat to stathat: %s", err)
-		return
+	result := makeCall("startSession", nil, "", HTTPS)
+	if value, ok := result["sessionID"].(string); ok {
+		sharky.Session = value
 	}
-	body, _ := ioutil.ReadAll(r.Body)
-	fmt.Printf("stathat post result body: %s", body)
-	r.Body.Close()
-
 }
 
 // ================= Trials =================
