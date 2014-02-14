@@ -39,7 +39,7 @@ type Response struct {
 }
 
 type Country struct {
-	ID int64
+	ID  int64
 	CC1 int64
 	CC2 int64
 	CC3 int64
@@ -373,7 +373,7 @@ func (sharky *Sharky) RenamePlaylist(playlistID int, name string) {
 func (sharky *Sharky) Authenticate(login, password string) {
 	params := make(map[string]string)
 	params["login"] = login
-	params["password"] = md5sum(password)Authenticate(
+	params["password"] = md5sum(password)
 	result := sharky.SessionCallHttps("authenticate", params)
 	if suc, ok := result["success"].(bool); ok {
 		if suc {
@@ -684,7 +684,6 @@ func (sharky *Sharky) RegisterUser(emailAddress, password, fullName, username, g
 }
 
 // ==================================== Reflection section ==================================
-
 
 func mapToStruct(params map[string]interface{}, elem *reflect.Value) {
 	for k, v := range params {
