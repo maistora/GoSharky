@@ -39,13 +39,13 @@ type Response struct {
 }
 
 type Country struct {
-	ID  int64
-	CC1 int64
-	CC2 int64
-	CC3 int64
-	CC4 int64
-	DMA int64
-	IPR int64
+	ID  float64
+	CC1 float64
+	CC2 float64
+	CC3 float64
+	CC4 float64
+	DMA float64
+	IPR float64
 }
 
 func getCountryElem(country *Country) reflect.Value {
@@ -704,13 +704,11 @@ func setFieldOfElem(elem *reflect.Value, key string, val interface{}) {
 			field.SetString(v)
 		}
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		if v, ok := val.(int64); ok {
-			field.SetInt(v)
-		}
+		v := getInt64(val)
+		field.SetInt(v)
 	case reflect.Float32, reflect.Float64:
-		if v, ok := val.(float64); ok {
-			field.SetFloat(v)
-		}
+		v := getFloat64(val)
+		field.SetFloat(v)
 	case reflect.Bool:
 		if v, ok := val.(bool); ok {
 			field.SetBool(v)
@@ -723,6 +721,39 @@ func firstToUpper(value string) string {
 	uni[0] = unicode.ToUpper(uni[0])
 	value = string(uni)
 	return value
+}
+
+func getFloat64(value interface{}) float64 {
+	if v, ok := value.(float32); ok {
+		return float64(v)
+	}
+	if v, ok := value.(float64); ok {
+		return v
+	}
+	return 0
+}
+
+func getInt64(value interface{}) int64 {
+	if v, ok := value.(int); ok {
+		return int64(v)
+	}
+	if v, ok := value.(int8); ok {
+		return int64(v)
+	}
+	if v, ok := value.(int16); ok {
+		return int64(v)
+	}
+	if v, ok := value.(int32); ok {
+		return int64(v)
+	}
+	if v, ok := value.(rune); ok {
+		return int64(v)
+	}
+	if v, ok := value.(int64); ok {
+		return v
+	}
+	fmt.Println("Its never OK")
+	return 0
 }
 
 // ==================================== Util section ==================================
