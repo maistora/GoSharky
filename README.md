@@ -1,4 +1,4 @@
-GoSharky
+Sharky
 ========
 
 Package GoSharky will offer support for [GrooveShark](http://grooveshark.com/) implemented in [Go](http:/golang.org).
@@ -6,7 +6,7 @@ Package GoSharky will offer support for [GrooveShark](http://grooveshark.com/) i
 Installation
 -------
 
-    go get github.com/maistora/GoSharky
+    go get github.com/maistora/sharky
 
 TODO
 -------
