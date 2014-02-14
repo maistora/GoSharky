@@ -83,8 +83,8 @@ func isEmpty(value string) bool {
 	}
 }
 
-func New(key, secret, username, password string) *Sharky {
-	return new(Sharky).Init(key, secret, username, password)
+func New(key, secret string) *Sharky {
+	return new(Sharky).Init(key, secret)
 }
 
 // ######################  Sharky's methods  ######################
@@ -116,11 +116,9 @@ func (sharky *Sharky) MakeCall(method string, params map[string]string, sessionI
 
 // Initializes Sharky with key and secret needed for communication with
 // GS API and username and password, needed for some specific functionality
-func (sharky *Sharky) Init(key, secret, username, password string) *Sharky {
+func (sharky *Sharky) Init(key, secret string) *Sharky {
 	sharky.Key = key
 	sharky.Secret = secret
-	sharky.Username = username
-	sharky.Password = password
 
 	return sharky
 }
