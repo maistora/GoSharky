@@ -22,6 +22,17 @@ const HTTPS = "https://"
 const HTTP = "http://"
 const CONTENT_TYPE = "application/json;charset=utf-8"
 
+/*
+    // The general idea
+   	sharky.Authenticate("username", md5("password"))
+   	songs := sharky.GetPopularSongMonth(10)
+   	country := sharky.GetCountry("17.235.72.103")
+   	streamDetails := GetStreamKeyStreamServer(songs[0].id, country, false)
+
+   	mp3player := new(3rdPartyMp3Player)
+   	mp3player.play(streamDetails.songStreamUrl)
+*/
+
 type RequestData struct {
 	Method     string            `json:"method"`
 	Parameters map[string]string `json:"parameters"`
