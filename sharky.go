@@ -9,10 +9,13 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"reflect"
 	"strings"
+	"unicode"
 )
 
 // Get your own KEY and SECTER here http://developers.grooveshark.com/api
@@ -31,7 +34,7 @@ type RequestData struct {
 
 type Response struct {
 	Header map[string]string        `json:"header"`
-	Result map[string]string        `json:"result"`
+	Result map[string]interface{}   `json:"result"`
 	Errors []map[string]interface{} `json:"errors"`
 }
 
@@ -52,7 +55,13 @@ type Playlist struct {
 }
 
 type UserInfo struct {
-	// TODO fill
+	UserID     int64
+	Email      string
+	FName      string
+	LName      string
+	IsPlus     bool
+	IsAnywhere bool
+	IsPremium  bool
 }
 
 type UserSubscriptionInfo struct {
@@ -117,88 +126,6 @@ type Tag struct {
 
 // end structs definitions
 
-// Makes POST request to the API's method with params. SessionID should also
-// be provided for some of the methods. You should also provide protocol (HTTP or HTTPS)
-func makeCall(method string, params map[string]string, sessionId, protocol, key, secret string) map[string]string {
-	reqData := buildRequestData(key, method, sessionId, params)
-	buf, _ := json.Marshal(&reqData)
-	signature := generateSignature(buf, []byte(secret))
-	url := buildApiURL(signature, protocol)
-	body := bytes.NewReader(buf)
-	r, err := http.Post(url, CONTENT_TYPE, body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	response, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer r.Body.Close()
-
-	var resp Response
-	json.Unmarshal(response, &resp)
-
-	fmt.Println(resp)
-	if resp.Errors != nil {
-		error(resp.Errors, method)
-	}
-
-	return resp.Result
-}
-
-func error(errors []map[string]interface{}, method string) {
-	line := "======================="
-	errMessage := fmt.Sprintf("\n%v\nError while executing %v()\n%v\n", line, method, line)
-	for _, err := range errors {
-		code := err["code"]
-		msg := err["message"]
-		errMessage += fmt.Sprintf("Error Code: %v (%v)", code, msg)
-	}
-	log.Fatal(errMessage)
-}
-
-func buildRequestData(key, method, sessionID string, params map[string]string) *RequestData {
-	data := new(RequestData)
-	data.Method = method
-	if params == nil || len(params) == 0 {
-		data.Parameters = make(map[string]string)
-	} else {
-		data.Parameters = params
-	}
-
-	header := make(map[string]string)
-	header["wsKey"] = key
-	header["sessionID"] = sessionID
-	data.Header = header
-
-	return data
-}
-
-// The signature is generated via HMAC using MD5 and the
-// secret provided by Grooveshark team.
-func generateSignature(postData, secret []byte) string {
-	mac := hmac.New(md5.New, secret)
-	mac.Write(postData)
-	signature := fmt.Sprintf("%x", mac.Sum(nil))
-
-	return signature
-}
-
-// Build the entire URL to the API. For some calls HTTPS
-// protocol is not mandatory.
-func buildApiURL(sig, protocol string) string {
-	return protocol + API_HOST + API_ENDPOIT + SIG_GET_KEY + sig
-}
-
-// Util method to check empty values
-func isEmpty(value string) bool {
-	if len(strings.Trim(value, " ")) == 0 {
-		return true
-	} else {
-		return false
-	}
-}
-
 func New(key, secret string) *Sharky {
 	return new(Sharky).Init(key, secret)
 }
@@ -210,18 +137,7 @@ type Sharky struct {
 	Secret    string
 	Username  string
 	Password  string
-}
-
-func (sharky *Sharky) NoSessionCallHttp(method string, params map[string]string) map[string]string {
-	return makeCall(method, params, "", HTTP, sharky.Key, sharky.Secret)
-}
-
-func (sharky *Sharky) NoSessionCallHttps(method string, params map[string]string) map[string]string {
-	return makeCall(method, params, "", HTTPS, sharky.Key, sharky.Secret)
-}
-
-func (sharky *Sharky) SessionCallHttps(method string, params map[string]string) map[string]string {
-	return makeCall(method, params, sharky.SessionID, HTTPS, sharky.Key, sharky.Secret)
+	UserInfo  *UserInfo
 }
 
 // Initializes Sharky with key and secret needed for communication with
@@ -231,6 +147,18 @@ func (sharky *Sharky) Init(key, secret string) *Sharky {
 	sharky.Secret = secret
 
 	return sharky
+}
+
+func (sharky *Sharky) NoSessionCallHttp(method string, params map[string]string) map[string]interface{} {
+	return makeCall(method, params, "", HTTP, sharky.Key, sharky.Secret)
+}
+
+func (sharky *Sharky) NoSessionCallHttps(method string, params map[string]string) map[string]interface{} {
+	return makeCall(method, params, "", HTTPS, sharky.Key, sharky.Secret)
+}
+
+func (sharky *Sharky) SessionCallHttps(method string, params map[string]string) map[string]interface{} {
+	return makeCall(method, params, sharky.SessionID, HTTPS, sharky.Key, sharky.Secret)
 }
 
 // Use addUserLibrarySongsEx instead. Add songs to a user's library.
@@ -418,7 +346,23 @@ func (sharky *Sharky) RenamePlaylist(playlistID int, name string) {
 // Authenticate a user using an established session, a login and an md5 of their password.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) Authenticate(login, password string) {
-	// TODO impelemnt
+	params := make(map[string]string)
+	params["login"] = login
+	params["password"] = md5sum(password)
+	result := sharky.SessionCallHttps("authenticate", params)
+	if suc, ok := result["success"].(bool); ok {
+		if suc {
+			log.Println("Authentication successful.")
+		} else {
+			log.Fatal("Invalid credentials. Check your username and password then try again.")
+		}
+	}
+	userInfo := new(UserInfo)
+	elem := getUserInfoElem(userInfo)
+	mapToStruct(result, &elem)
+
+	sharky.UserInfo = userInfo
+	fmt.Println(sharky.UserInfo)
 }
 
 // Get userID from username
@@ -583,7 +527,12 @@ func (sharky *Sharky) GetSimilarArtists(artistID, limit, page int) []Artist {
 // Start a session
 func (sharky *Sharky) StartSession() {
 	result := sharky.NoSessionCallHttps("startSession", nil)
-	sharky.SessionID = result["sessionID"]
+	if val, ok := result["sessionID"].(string); ok {
+		sharky.SessionID = val
+	}
+	if isEmpty(sharky.SessionID) {
+		log.Fatalln("Cannot obtain session ID.")
+	}
 }
 
 // ================= Trials =================
@@ -707,4 +656,136 @@ func (sharky *Sharky) GetSongIDFromTinysongBase62(base62 string) string {
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) RegisterUser(emailAddress, password, fullName, username, gender, birthDate string) {
 	// TODO impelemnt
+}
+
+// ==================================== Reflection section ==================================
+
+func getUserInfoElem(userInfo *UserInfo) reflect.Value {
+	return reflect.ValueOf(userInfo).Elem()
+}
+
+func mapToStruct(params map[string]interface{}, elem *reflect.Value) {
+	for k, v := range params {
+		setFieldOfElem(elem, k, v)
+	}
+}
+
+func setFieldOfElem(elem *reflect.Value, key string, val interface{}) {
+	field := elem.FieldByName(firstToUpper(key))
+
+	if !field.CanSet() {
+		return
+	}
+
+	switch field.Kind() {
+	case reflect.String:
+		if v, ok := val.(string); ok {
+			field.SetString(v)
+		}
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		if v, ok := val.(int64); ok {
+			field.SetInt(v)
+		}
+	case reflect.Float32, reflect.Float64:
+		if v, ok := val.(float64); ok {
+			field.SetFloat(v)
+		}
+	case reflect.Bool:
+		if v, ok := val.(bool); ok {
+			field.SetBool(v)
+		}
+	}
+}
+
+func firstToUpper(value string) string {
+	uni := []rune(value)
+	uni[0] = unicode.ToUpper(uni[0])
+	value = string(uni)
+	return value
+}
+
+// ==================================== Util section ==================================
+
+// Makes POST request to the API's method with params. SessionID should also
+// be provided for some of the methods. You should also provide protocol (HTTP or HTTPS)
+func makeCall(method string, params map[string]string, sessionId, protocol, key, secret string) map[string]interface{} {
+	reqData := buildRequestData(key, method, sessionId, params)
+	buf, _ := json.Marshal(&reqData)
+	signature := generateSignature(buf, []byte(secret))
+	url := buildApiURL(signature, protocol)
+	body := bytes.NewReader(buf)
+	r, err := http.Post(url, CONTENT_TYPE, body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	response, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer r.Body.Close()
+
+	var resp Response
+	json.Unmarshal(response, &resp)
+
+	if resp.Errors != nil {
+		error(resp.Errors, method)
+	}
+
+	return resp.Result
+}
+
+func error(errors []map[string]interface{}, method string) {
+	line := "======================="
+	errMessage := fmt.Sprintf("\n%v\nError while executing %v()\n%v\n", line, method, line)
+	for _, err := range errors {
+		code := err["code"]
+		msg := err["message"]
+		data := err["data"]
+		errMessage += fmt.Sprintf("Error Code: %v, %v [%v]\n", code, msg, data)
+	}
+	log.Fatal(errMessage)
+}
+
+func buildRequestData(key, method, sessionID string, params map[string]string) *RequestData {
+	data := new(RequestData)
+	data.Method = method
+	data.Parameters = params
+
+	header := make(map[string]string)
+	header["wsKey"] = key
+	header["sessionID"] = sessionID
+	data.Header = header
+
+	return data
+}
+
+// The signature is generated via HMAC using MD5 and the
+// secret provided by Grooveshark team.
+func generateSignature(postData, secret []byte) string {
+	mac := hmac.New(md5.New, secret)
+	mac.Write(postData)
+	signature := fmt.Sprintf("%x", mac.Sum(nil))
+
+	return signature
+}
+
+// Build the entire URL to the API. For some calls HTTPS
+// protocol is not mandatory.
+func buildApiURL(sig, protocol string) string {
+	return protocol + API_HOST + API_ENDPOIT + SIG_GET_KEY + sig
+}
+
+// Util method to check empty values
+func isEmpty(value string) bool {
+	if len(strings.Trim(value, " ")) == 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func md5sum(value string) string {
+	h := md5.New()
+	io.WriteString(h, value)
+	return fmt.Sprintf("%x", h.Sum(nil))
 }
