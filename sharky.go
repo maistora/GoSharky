@@ -113,11 +113,7 @@ type Tag struct {
 	// TODO fill
 }
 
-func main() {
-	// sharky := New("key", "secret", "", "")
-	sharky.StartSession()
-	fmt.Println(sharky.Session)
-}
+// end structs definitions
 
 func generateRequestData(key, method, sessionID string, params map[string]string) *RequestData {
 	data := new(RequestData)
