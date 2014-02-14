@@ -16,8 +16,6 @@ import (
 )
 
 // Get your own KEY and SECTER here http://developers.grooveshark.com/api
-const KEY = ""
-const SECRET = ""
 const API_HOST = "api.grooveshark.com"
 const API_ENDPOIT = "/ws3.php"
 const SIG_GET_KEY = "?sig="
@@ -32,11 +30,18 @@ type RequestData struct {
 }
 
 type Response struct {
-	Header map[string]interface{} `json:"header"`
-	Result map[string]interface{} `json:"result"`
+	Header map[string]string `json:"header"`
+	Result map[string]string `json:"result"`
 }
 
-func generateRequestData(method, sessionID string, params map[string]string) *RequestData {
+func main() {
+	// sharky := New("key", "secret", "", "")
+	sharky := New("golang_nikolay", "3a27a148229e9daceb45e263646b8d8b", "", "")
+	sharky.StartSession()
+	fmt.Println(sharky.Session)
+}
+
+func generateRequestData(key, method, sessionID string, params map[string]string) *RequestData {
 	data := new(RequestData)
 	data.Method = method
 	if params == nil || len(params) == 0 {
@@ -46,7 +51,7 @@ func generateRequestData(method, sessionID string, params map[string]string) *Re
 	}
 
 	header := make(map[string]string)
-	header["wsKey"] = KEY
+	header["wsKey"] = key
 	header["sessionID"] = sessionID
 	data.Header = header
 
@@ -78,16 +83,25 @@ func isEmpty(value string) bool {
 	}
 }
 
-func main() {
-	sharky := new(Sharky)
-	sharky.StartSession()
-	fmt.Println(sharky.Session)
+func New(key, secret, username, password string) *Sharky {
+	return new(Sharky).Init(key, secret, username, password)
 }
 
-func makeCall(method string, params map[string]string, sessionId, protocol string) map[string]interface{} {
-	reqData := generateRequestData(method, sessionId, params)
+// ######################  Sharky's methods  ######################
+type Sharky struct {
+	Session  string
+	Key      string
+	Secret   string
+	Username string
+	Password string
+}
+
+// Makes POST request to the API's method with params. SessionID should also
+// be provided for some of the methods. You should also provide protocol (HTTP or HTTPS)
+func (sharky *Sharky) MakeCall(method string, params map[string]string, sessionId, protocol string) map[string]string {
+	reqData := generateRequestData(sharky.Key, method, sessionId, params)
 	buf, _ := json.Marshal(&reqData)
-	signature := generateSignature(buf, []byte(SECRET))
+	signature := generateSignature(buf, []byte(sharky.Secret))
 	url := generateApiURL(signature, protocol)
 	body := bytes.NewReader(buf)
 	r, _ := http.Post(url, CONTENT_TYPE, body)
@@ -100,8 +114,15 @@ func makeCall(method string, params map[string]string, sessionId, protocol strin
 	return resp.Result
 }
 
-type Sharky struct {
-	Session string
+// Initializes Sharky with key and secret needed for communication with
+// GS API and username and password, needed for some specific functionality
+func (sharky *Sharky) Init(key, secret, username, password string) *Sharky {
+	sharky.Key = key
+	sharky.Secret = secret
+	sharky.Username = username
+	sharky.Password = password
+
+	return sharky
 }
 
 // Use addUserLibrarySongsEx instead. Add songs to a user's library.
@@ -453,10 +474,8 @@ func (sharky *Sharky) GetSimilarArtists(artistID, limit, page int) []struc.Artis
 
 // Start a session
 func (sharky *Sharky) StartSession() {
-	result := makeCall("startSession", nil, "", HTTPS)
-	if value, ok := result["sessionID"].(string); ok {
-		sharky.Session = value
-	}
+	result := sharky.MakeCall("startSession", nil, "", HTTPS)
+	sharky.Session = result["sessionID"]
 }
 
 // ================= Trials =================
