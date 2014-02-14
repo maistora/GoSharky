@@ -39,7 +39,17 @@ type Response struct {
 }
 
 type Country struct {
-	// TODO fill
+	ID int64
+	CC1 int64
+	CC2 int64
+	CC3 int64
+	CC4 int64
+	DMA int64
+	IPR int64
+}
+
+func getCountryElem(country *Country) reflect.Value {
+	return reflect.ValueOf(country).Elem()
 }
 
 type AutoplayState struct {
@@ -62,6 +72,10 @@ type UserInfo struct {
 	IsPlus     bool
 	IsAnywhere bool
 	IsPremium  bool
+}
+
+func getUserInfoElem(userInfo *UserInfo) reflect.Value {
+	return reflect.ValueOf(userInfo).Elem()
 }
 
 type UserSubscriptionInfo struct {
@@ -159,6 +173,10 @@ func (sharky *Sharky) NoSessionCallHttps(method string, params map[string]string
 
 func (sharky *Sharky) SessionCallHttps(method string, params map[string]string) map[string]interface{} {
 	return makeCall(method, params, sharky.SessionID, HTTPS, sharky.Key, sharky.Secret)
+}
+
+func (sharky *Sharky) SessionCallHttp(method string, params map[string]string) map[string]interface{} {
+	return makeCall(method, params, sharky.SessionID, HTTP, sharky.Key, sharky.Secret)
 }
 
 // Use addUserLibrarySongsEx instead. Add songs to a user's library.
@@ -266,8 +284,15 @@ func (sharky *Sharky) UnsubscribePlaylist(playlistID int) {
 
 // Get country from IP. If an IP is omitted, it will use the request's IP.
 func (sharky *Sharky) GetCountry(ip string) *Country {
-	// TODO impelemnt
-	return nil
+	params := make(map[string]string)
+	params["ip"] = ip
+	result := sharky.SessionCallHttp("getCountry", params)
+
+	country := new(Country)
+	elem := getCountryElem(country)
+	mapToStruct(result, &elem)
+
+	return country
 }
 
 // Get playlist information. To get songs as well, call getPlaylist.
@@ -348,7 +373,7 @@ func (sharky *Sharky) RenamePlaylist(playlistID int, name string) {
 func (sharky *Sharky) Authenticate(login, password string) {
 	params := make(map[string]string)
 	params["login"] = login
-	params["password"] = md5sum(password)
+	params["password"] = md5sum(password)Authenticate(
 	result := sharky.SessionCallHttps("authenticate", params)
 	if suc, ok := result["success"].(bool); ok {
 		if suc {
@@ -660,9 +685,6 @@ func (sharky *Sharky) RegisterUser(emailAddress, password, fullName, username, g
 
 // ==================================== Reflection section ==================================
 
-func getUserInfoElem(userInfo *UserInfo) reflect.Value {
-	return reflect.ValueOf(userInfo).Elem()
-}
 
 func mapToStruct(params map[string]interface{}, elem *reflect.Value) {
 	for k, v := range params {
