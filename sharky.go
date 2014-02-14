@@ -39,13 +39,13 @@ type Response struct {
 }
 
 type Country struct {
-	ID  float64
-	CC1 float64
-	CC2 float64
-	CC3 float64
-	CC4 float64
-	DMA float64
-	IPR float64
+	ID  int64
+	CC1 int64
+	CC2 int64
+	CC3 int64
+	CC4 int64
+	DMA int64
+	IPR int64
 }
 
 func getCountryElem(country *Country) reflect.Value {
@@ -57,7 +57,21 @@ type AutoplayState struct {
 }
 
 type Song struct {
-	// TODO fill
+	SongID                int64
+	SongName              string
+	ArtistID              int64
+	ArtistName            string
+	AlbumID               int64
+	AlbumName             string
+	CoverArtFilename      string
+	Popularity            string
+	IsLowBitrateAvailable bool
+	IsVerified            bool
+	Flags                 int64
+}
+
+func getSongElem(song *Song) reflect.Value {
+	return reflect.ValueOf(song).Elem()
 }
 
 type Playlist struct {
@@ -111,7 +125,14 @@ type Artist struct {
 }
 
 type StreamDetails struct {
-	// TODO fill
+	StreamKey      string
+	Url            string
+	StreamServerID int64
+	USecs          int64
+}
+
+func getStreamDetailsElem(streamDetails *StreamDetails) reflect.Value {
+	return reflect.ValueOf(streamDetails).Elem()
 }
 
 type SongUrl struct {
@@ -302,14 +323,38 @@ func (sharky *Sharky) GetPlaylistInfo(playlistID string) *PlaylistInfo {
 }
 
 // Get a subset of today's popular songs, from the Grooveshark popular billboard.
-func (sharky *Sharky) GetPopularSongsToday(limit int) []Song {
-	// TODO impelemnt
-	return nil
+func (sharky *Sharky) GetPopularSongsToday(limit int) []*Song {
+	return sharky.getPopularSongs(limit, "getPopularSongsToday")
 }
 
 // Get a subset of this month's popular songs, from the Grooveshark popular billboard.
-func (sharky *Sharky) GetPopularSongsMonth(limit int) []Song {
-	// TODO impelemnt
+func (sharky *Sharky) GetPopularSongsMonth(limit int) []*Song {
+	return sharky.getPopularSongs(limit, "getPopularSongsMonth")
+}
+
+// Get a subset of this month's popular songs, from the Grooveshark popular billboard.
+func (sharky *Sharky) getPopularSongs(limit int, method string) []*Song {
+	if limit <= 0 {
+		return nil
+	}
+	params := make(map[string]string)
+	params["limit"] = fmt.Sprintf("%v", limit)
+	result := sharky.SessionCallHttp(method, params)
+
+	if songs, ok := result["songs"].([]interface{}); ok {
+		songArr := make([]*Song, 0)
+		for _, songParams := range songs {
+			if sParams, ok := songParams.(map[string]interface{}); ok {
+				song := new(Song)
+				elem := getSongElem(song)
+				mapToStruct(sParams, &elem)
+				songArr = append(songArr, song)
+			}
+		}
+
+		return songArr
+	}
+
 	return nil
 }
 
@@ -752,7 +797,14 @@ func getInt64(value interface{}) int64 {
 	if v, ok := value.(int64); ok {
 		return v
 	}
-	fmt.Println("Its never OK")
+	if v, ok := value.(float32); ok {
+		return int64(v)
+	}
+	if v, ok := value.(float64); ok {
+		return int64(v)
+	}
+
+	log.Fatal("!!!!!!!!!!! CANNOT PARSE INT VALUE !!!!!!!!!!!!")
 	return 0
 }
 
