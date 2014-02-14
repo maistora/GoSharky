@@ -1,7 +1,7 @@
 Sharky
 ========
 
-Package GoSharky will offer support for [GrooveShark](http://grooveshark.com/) implemented in [Go](http:/golang.org).
+Package Sharky will offer support for [GrooveShark](http://grooveshark.com/) implemented in [Go](http:/golang.org).
 
 Installation
 -------
