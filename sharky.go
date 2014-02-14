@@ -1,7 +1,7 @@
 // This file was auto-generated from the
 // Grooveshark API Extractor
 // package sharky
-package main
+package sharky
 
 import (
 	"bytes"
