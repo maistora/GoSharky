@@ -2,12 +2,10 @@ package main
 
 import (
 	"fmt"
+	// 	"github.com/maistora/sharky"
 )
 
 func main() {
-	sharky := New("golang_nikolay", "3a27a148229e9daceb45e263646b8d8b")
-	fmt.Println(skarky.Session)
-
 	/*
 	    // The general idea
 	   	sharky.Authenticate("username", md5("password"))
