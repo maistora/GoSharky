@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -29,8 +30,14 @@ type RequestData struct {
 }
 
 type Response struct {
-	Header map[string]string `json:"header"`
-	Result map[string]string `json:"result"`
+	Header map[string]string             `json:"header"`
+	Result map[string]string             `json:"result"`
+	Errors []map[interface{}]interface{} `json:"errors"`
+}
+
+type Error struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
 }
 
 type Country struct {
@@ -115,7 +122,44 @@ type Tag struct {
 
 // end structs definitions
 
-func generateRequestData(key, method, sessionID string, params map[string]string) *RequestData {
+// Makes POST request to the API's method with params. SessionID should also
+// be provided for some of the methods. You should also provide protocol (HTTP or HTTPS)
+func makeCall(method string, params map[string]string, sessionId, protocol, key, secret string) map[string]string {
+	reqData := buildRequestData(key, method, sessionId, params)
+	buf, _ := json.Marshal(&reqData)
+	signature := generateSignature(buf, []byte(secret))
+	url := buildApiURL(signature, protocol)
+	body := bytes.NewReader(buf)
+	r, err := http.Post(url, CONTENT_TYPE, body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	response, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer r.Body.Close()
+
+	var resp Response
+	json.Unmarshal(response, &resp)
+
+	fmt.Println(resp)
+	if len(resp.Errors) == 0 {
+		fmt.Printf("%v", resp.Errors)
+		error(resp.Errors)
+	}
+
+	return resp.Result
+}
+
+func error(error []map[interface{}]interface{}) {
+
+	// code := error[0].Code
+	// msg := error[0].Message
+	// log.Fatal(fmt.Sprintf("ERROR: %v: %v", code, msg))
+}
+
+func buildRequestData(key, method, sessionID string, params map[string]string) *RequestData {
 	data := new(RequestData)
 	data.Method = method
 	if params == nil || len(params) == 0 {
@@ -144,7 +188,7 @@ func generateSignature(postData, secret []byte) string {
 
 // Build the entire URL to the API. For some calls HTTPS
 // protocol is not mandatory.
-func generateApiURL(sig, protocol string) string {
+func buildApiURL(sig, protocol string) string {
 	return protocol + API_HOST + API_ENDPOIT + SIG_GET_KEY + sig
 }
 
@@ -170,22 +214,16 @@ type Sharky struct {
 	Password  string
 }
 
-// Makes POST request to the API's method with params. SessionID should also
-// be provided for some of the methods. You should also provide protocol (HTTP or HTTPS)
-func (sharky *Sharky) MakeCall(method string, params map[string]string, sessionId, protocol string) map[string]string {
-	reqData := generateRequestData(sharky.Key, method, sessionId, params)
-	buf, _ := json.Marshal(&reqData)
-	signature := generateSignature(buf, []byte(sharky.Secret))
-	url := generateApiURL(signature, protocol)
-	body := bytes.NewReader(buf)
-	r, _ := http.Post(url, CONTENT_TYPE, body)
-	response, _ := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
+func (sharky *Sharky) NoSessionCallHttp(method string, params map[string]string) map[string]string {
+	return makeCall(method, params, "", HTTP, sharky.Key, sharky.Secret)
+}
 
-	var resp Response
-	json.Unmarshal(response, &resp)
+func (sharky *Sharky) NoSessionCallHttps(method string, params map[string]string) map[string]string {
+	return makeCall(method, params, "", HTTPS, sharky.Key, sharky.Secret)
+}
 
-	return resp.Result
+func (sharky *Sharky) SessionCallHttps(method string, params map[string]string) map[string]string {
+	return makeCall(method, params, sharky.SessionID, HTTPS, sharky.Key, sharky.Secret)
 }
 
 // Initializes Sharky with key and secret needed for communication with
@@ -546,7 +584,7 @@ func (sharky *Sharky) GetSimilarArtists(artistID, limit, page int) []Artist {
 
 // Start a session
 func (sharky *Sharky) StartSession() {
-	result := sharky.MakeCall("startSession", nil, "", HTTPS)
+	result := sharky.NoSessionCallHttp("startSession", nil)
 	sharky.SessionID = result["sessionID"]
 }
 
