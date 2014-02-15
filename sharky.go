@@ -27,9 +27,9 @@ const HTTP = "http://"
 const CONTENT_TYPE = "application/json;charset=utf-8"
 
 type RequestData struct {
-	Method     string            `json:"method"`
-	Parameters map[string]string `json:"parameters"`
-	Header     map[string]string `json:"header"`
+	Method     string                 `json:"method"`
+	Parameters map[string]interface{} `json:"parameters"`
+	Header     map[string]string      `json:"header"`
 }
 
 type Response struct {
@@ -184,19 +184,19 @@ func (sharky *Sharky) Init(key, secret string) *Sharky {
 	return sharky
 }
 
-func (sharky *Sharky) NoSessionCallHttp(method string, params map[string]string) map[string]interface{} {
+func (sharky *Sharky) NoSessionCallHttp(method string, params map[string]interface{}) map[string]interface{} {
 	return makeCall(method, params, "", HTTP, sharky.Key, sharky.Secret)
 }
 
-func (sharky *Sharky) NoSessionCallHttps(method string, params map[string]string) map[string]interface{} {
+func (sharky *Sharky) NoSessionCallHttps(method string, params map[string]interface{}) map[string]interface{} {
 	return makeCall(method, params, "", HTTPS, sharky.Key, sharky.Secret)
 }
 
-func (sharky *Sharky) SessionCallHttps(method string, params map[string]string) map[string]interface{} {
+func (sharky *Sharky) SessionCallHttps(method string, params map[string]interface{}) map[string]interface{} {
 	return makeCall(method, params, sharky.SessionID, HTTPS, sharky.Key, sharky.Secret)
 }
 
-func (sharky *Sharky) SessionCallHttp(method string, params map[string]string) map[string]interface{} {
+func (sharky *Sharky) SessionCallHttp(method string, params map[string]interface{}) map[string]interface{} {
 	return makeCall(method, params, sharky.SessionID, HTTP, sharky.Key, sharky.Secret)
 }
 
@@ -305,7 +305,7 @@ func (sharky *Sharky) UnsubscribePlaylist(playlistID int) {
 
 // Get country from IP. If an IP is omitted, it will use the request's IP.
 func (sharky *Sharky) GetCountry(ip string) *Country {
-	params := make(map[string]string)
+	params := make(map[string]interface{})
 	params["ip"] = ip
 	result := sharky.SessionCallHttp("getCountry", params)
 
@@ -337,8 +337,8 @@ func (sharky *Sharky) getPopularSongs(limit int, method string) []*Song {
 	if limit <= 0 {
 		return nil
 	}
-	params := make(map[string]string)
-	params["limit"] = fmt.Sprintf("%v", limit)
+	params := make(map[string]interface{})
+	params["limit"] = limit
 	result := sharky.SessionCallHttp(method, params)
 
 	if songs, ok := result["songs"].([]interface{}); ok {
@@ -416,10 +416,12 @@ func (sharky *Sharky) RenamePlaylist(playlistID int, name string) {
 // Authenticate a user using an established session, a login and an md5 of their password.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) Authenticate(login, password string) {
-	params := make(map[string]string)
+	params := make(map[string]interface{})
 	params["login"] = login
 	params["password"] = md5sum(password)
+
 	result := sharky.SessionCallHttps("authenticate", params)
+
 	if suc, ok := result["success"].(bool); ok {
 		if suc {
 			log.Println("Authentication successful.")
@@ -432,7 +434,6 @@ func (sharky *Sharky) Authenticate(login, password string) {
 	mapToStruct(result, &elem)
 
 	sharky.UserInfo = userInfo
-	fmt.Println(sharky.UserInfo)
 }
 
 // Get userID from username
@@ -539,9 +540,19 @@ func (sharky *Sharky) GetArtistSearchResults(query string, limit int) []Artist {
 
 // Get stream key, ID, etc. from songID. Requires country object obtained from getCountry
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) GetStreamKeyStreamServer(songID int, country Country, lowBitrate bool) *StreamDetails {
-	// TODO impelemnt
-	return nil
+func (sharky *Sharky) GetStreamKeyStreamServer(songID int64, country *Country, lowBitrate bool) *StreamDetails {
+	params := make(map[string]interface{})
+	params["songID"] = songID
+	params["country"] = country
+	params["lowBitrate"] = lowBitrate
+
+	result := sharky.SessionCallHttp("getStreamKeyStreamServer", params)
+
+	streamDetails := new(StreamDetails)
+	elem := getStreamDetailsElem(streamDetails)
+	mapToStruct(result, &elem)
+
+	return streamDetails
 }
 
 // ================= URLS =================
@@ -812,7 +823,7 @@ func getInt64(value interface{}) int64 {
 
 // Makes POST request to the API's method with params. SessionID should also
 // be provided for some of the methods. You should also provide protocol (HTTP or HTTPS)
-func makeCall(method string, params map[string]string, sessionId, protocol, key, secret string) map[string]interface{} {
+func makeCall(method string, params map[string]interface{}, sessionId, protocol, key, secret string) map[string]interface{} {
 	reqData := buildRequestData(key, method, sessionId, params)
 	buf, _ := json.Marshal(&reqData)
 	signature := generateSignature(buf, []byte(secret))
@@ -850,7 +861,7 @@ func error(errors []map[string]interface{}, method string) {
 	log.Fatal(errMessage)
 }
 
-func buildRequestData(key, method, sessionID string, params map[string]string) *RequestData {
+func buildRequestData(key, method, sessionID string, params map[string]interface{}) *RequestData {
 	data := new(RequestData)
 	data.Method = method
 	data.Parameters = params
@@ -892,4 +903,13 @@ func md5sum(value string) string {
 	h := md5.New()
 	io.WriteString(h, value)
 	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+func struct2json(struc interface{}) string {
+	b, err := json.Marshal(struc)
+	if err != nil {
+		log.Fatal("Cannot parse struct to JSON")
+		return ""
+	}
+	return string(b)
 }
