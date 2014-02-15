@@ -49,15 +49,6 @@ func TestSessionIDObtain(t *testing.T) {
 	}
 }
 
-func TestAuthenticateInit(t *testing.T) {
-	sharky := setUp()
-	sharky.StartSession()
-	sharky.Authenticate(LOGIN, PASSWORD)
-	if sharky.Username != LOGIN || sharky.Password != PASSWORD {
-		t.Skip("Unknown problem. Fix later.")
-	}
-}
-
 func TestAuthentication(t *testing.T) {
 	sharky := setUp()
 	sharky.StartSession()

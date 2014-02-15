@@ -44,7 +44,7 @@ func popularSong(w http.ResponseWriter, r *http.Request) {
 }
 
 func customSongSearch(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Location", findAndGetSongStream())
+	w.Header().Set("Location", findSongAndGetStream())
 	w.WriteHeader(303)
 }
 

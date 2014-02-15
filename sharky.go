@@ -232,8 +232,6 @@ type Sharky struct {
 	SessionID string
 	Key       string
 	Secret    string
-	Username  string
-	Password  string
 	UserInfo  *UserInfo
 }
 
@@ -362,8 +360,6 @@ func (sharky *Sharky) RemoveUserFavoriteSongs(songIDs string) {
 func (sharky *Sharky) Logout() {
 	sharky.SessionCallHttp("logout", nil)
 	sharky.UserInfo = nil
-	sharky.Username = ""
-	sharky.Password = ""
 	sharky.SessionID = ""
 	sharky.Key = ""
 	sharky.Secret = ""
