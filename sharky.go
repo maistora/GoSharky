@@ -74,8 +74,25 @@ func getSongElem(song *Song) reflect.Value {
 	return reflect.ValueOf(song).Elem()
 }
 
+type LibSong struct {
+	SongID   int64
+	AlbumID  int64
+	ArtistID int64
+	TrackID  int64
+}
+
+func getLibSongElem(libSong *LibSong) reflect.Value {
+	return reflect.ValueOf(libSong).Elem()
+}
+
 type Playlist struct {
-	// TODO fill
+	PlaylistID   int64
+	PlaylistName string
+	TSAdded      string
+}
+
+func getPlaylistElem(playlist *Playlist) reflect.Value {
+	return reflect.ValueOf(playlist).Elem()
 }
 
 type UserInfo struct {
@@ -205,35 +222,53 @@ func (sharky *Sharky) SessionCallHttp(method string, params map[string]interface
 // be the respective albumID for songIDs[0] and same with artistIDs.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) AddUserLibrarySongs(songIDs, albumIDs, artistIDs string) {
-	// TODO impelemnt
+	log.Fatal("Use AddUserLibrarySongsEx instead.")
 }
 
 // Get user library songs. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) GetUserLibrarySongs(limit, page int) []Song {
-	// TODO impelemnt
-	return nil
+func (sharky *Sharky) GetUserLibrarySongs(limit, page int) []*Song {
+	if page <= 0 {
+		return nil
+	}
+	return sharky.getSongs(limit, "getUserLibrarySongs")
 }
 
 // Add songs to a user's library. Songs should be an array of objects
 // representing each song with keys: songID, albumID, artistID, trackNum.
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) AddUserLibrarySongsEx(songs string) {
-	// TODO impelemnt
+func (sharky *Sharky) AddUserLibrarySongsEx(songs []LibSong) {
+	// TODO check it
+	params := make(map[string]interface{})
+	params["songs"] = songs
+
+	sharky.SessionCallHttp("addUserLibrarySongsEx", params)
 }
 
 // Remove songs from a user's library.
 // Returns true if everything is OK.
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) RemoveUserLibrarySongs(songIDs, albumIDs, artistIDs string) bool {
-	// TODO impelemnt
+func (sharky *Sharky) RemoveUserLibrarySongs(songs []LibSong) bool {
+	// TODO check it
+	params := make(map[string]interface{})
+	params["songs"] = songs
+
+	result := sharky.SessionCallHttp("removeUserLibrarySongs", params)
+
+	if suc, ok := result["success"].(bool); ok {
+		return suc
+	}
+
 	return false
 }
 
 // Get subscribed playlists of the logged-in user. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) GetUserPlaylistsSubscribed() []Playlist {
-	// TODO impelemnt
+func (sharky *Sharky) GetUserPlaylistsSubscribed() []*Playlist {
+	result := sharky.SessionCallHttp("getUserPlaylistsSubscribed", nil)
+	playlist := new(Playlist)
+	elem := getPlaylistElem(playlist)
+	mapToStruct(result, &elem)
 	return nil
 }
 
@@ -324,16 +359,16 @@ func (sharky *Sharky) GetPlaylistInfo(playlistID string) *PlaylistInfo {
 
 // Get a subset of today's popular songs, from the Grooveshark popular billboard.
 func (sharky *Sharky) GetPopularSongsToday(limit int) []*Song {
-	return sharky.getPopularSongs(limit, "getPopularSongsToday")
+	return sharky.getSongs(limit, "getPopularSongsToday")
 }
 
 // Get a subset of this month's popular songs, from the Grooveshark popular billboard.
 func (sharky *Sharky) GetPopularSongsMonth(limit int) []*Song {
-	return sharky.getPopularSongs(limit, "getPopularSongsMonth")
+	return sharky.getSongs(limit, "getPopularSongsMonth")
 }
 
 // Get a subset of this month's popular songs, from the Grooveshark popular billboard.
-func (sharky *Sharky) getPopularSongs(limit int, method string) []*Song {
+func (sharky *Sharky) getSongs(limit int, method string) []*Song {
 	if limit <= 0 {
 		return nil
 	}
@@ -903,13 +938,4 @@ func md5sum(value string) string {
 	h := md5.New()
 	io.WriteString(h, value)
 	return fmt.Sprintf("%x", h.Sum(nil))
-}
-
-func struct2json(struc interface{}) string {
-	b, err := json.Marshal(struc)
-	if err != nil {
-		log.Fatal("Cannot parse struct to JSON")
-		return ""
-	}
-	return string(b)
 }
