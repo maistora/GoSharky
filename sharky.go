@@ -68,6 +68,7 @@ type Song struct {
 	IsLowBitrateAvailable bool
 	IsVerified            bool
 	Flags                 int64
+	TSFavorited           string
 }
 
 func getSongElem(song *Song) reflect.Value {
@@ -266,43 +267,64 @@ func (sharky *Sharky) RemoveUserLibrarySongs(songs []LibSong) bool {
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) GetUserPlaylistsSubscribed() []*Playlist {
 	result := sharky.SessionCallHttp("getUserPlaylistsSubscribed", nil)
-	playlist := new(Playlist)
-	elem := getPlaylistElem(playlist)
-	mapToStruct(result, &elem)
-	return nil
+	return sharky.getPlaylists(result)
 }
 
 // Get playlists of the logged-in user. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) GetUserPlaylists(limit int) []Playlist {
-	// TODO impelemnt
+func (sharky *Sharky) GetUserPlaylists(limit int) []*Playlist {
+	params := make(map[string]interface{})
+	params["limit"] = limit
+
+	result := sharky.SessionCallHttp("getUserPlaylists", params)
+	return sharky.getPlaylists(result)
+}
+
+func (sharky *Sharky) getPlaylists(result map[string]interface{}) []*Playlist {
+	if playlists, ok := result["playlists"].([]interface{}); ok {
+		plArr := make([]*Playlist, 0)
+		for _, plParams := range playlists {
+			if plParam, ok := plParams.(map[string]interface{}); ok {
+				playlist := new(Playlist)
+				elem := getPlaylistElem(playlist)
+				mapToStruct(plParam, &elem)
+				plArr = append(plArr, playlist)
+			}
+		}
+
+		return plArr
+	}
 	return nil
 }
 
 // Get user favorite songs. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) GetUserFavoriteSongs(limit int) []Song {
-	// TODO impelemnt
-	return nil
+func (sharky *Sharky) GetUserFavoriteSongs(limit int) []*Song {
+	return sharky.getSongs(limit, "getUserFavoriteSongs")
 }
 
 // Remove a set of favorite songs for a user. Must provide a logged-in sessionID.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) RemoveUserFavoriteSongs(songIDs string) {
-	// TODO impelemnt
+	log.Fatal("Not implemented due to non-clean spec")
 }
 
 // Logout a user using an established session.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) Logout() {
-	// TODO impelemnt
+	sharky.SessionCallHttp("logout", nil)
+	sharky.UserInfo = nil
+	sharky.Username = ""
+	sharky.Password = ""
+	sharky.SessionID = ""
+	sharky.Key = ""
+	sharky.Secret = ""
 }
 
 // Authenticate a user using a token from http://grooveshark.com/auth/.
 // See Overview for documentation.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) AuthenticateToken(token string) {
-	// TODO impelemnt
 }
 
 // Get logged-in user info from sessionID
