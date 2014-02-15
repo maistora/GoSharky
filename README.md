@@ -1,7 +1,5 @@
 
-
-Sharky
-========
+![Bilby Stampede](https://raw2.github.com/maistora/sharky/master/sharky.png)
 
 Package Sharky will offer support for [GrooveShark](http://grooveshark.com/) implemented in [Go](http:/golang.org).
 There are still many methods waiting to be implemented, but the most important once are good to go.
