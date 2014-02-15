@@ -38,6 +38,12 @@ type Response struct {
 	Errors []map[string]interface{} `json:"errors"`
 }
 
+type SingleResponse struct {
+	Header map[string]string        `json:"header"`
+	Result string                   `json:"result"`
+	Errors []map[string]interface{} `json:"errors"`
+}
+
 type Country struct {
 	ID  int64
 	CC1 int64
@@ -120,6 +126,7 @@ type PlaylistInfo struct {
 	UserID              int64
 	PlaylistDescription string
 	CoverArtFilename    string
+	Songs               []*Song
 }
 
 func getPlaylistInfoElem(plInfo *PlaylistInfo) reflect.Value {
@@ -226,12 +233,16 @@ func (sharky *Sharky) SessionCallHttp(method string, params map[string]interface
 	return makeCall(method, params, sharky.SessionID, HTTP, sharky.Key, sharky.Secret)
 }
 
+func (sharky *Sharky) SingleSessionCallHttp(method string, params map[string]interface{}) string {
+	return makeSingleResultCall(method, params, sharky.SessionID, HTTP, sharky.Key, sharky.Secret)
+}
+
 // Use addUserLibrarySongsEx instead. Add songs to a user's library.
 // Song metadata should be spread across all 3 params. albumIDs[0] should
 // be the respective albumID for songIDs[0] and same with artistIDs.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) AddUserLibrarySongs(songIDs, albumIDs, artistIDs string) {
-	log.Fatal("Use AddUserLibrarySongsEx instead.")
+	log.Panic("Use AddUserLibrarySongsEx instead.")
 }
 
 // Get user library songs. Requires an authenticated session.
@@ -314,7 +325,7 @@ func (sharky *Sharky) GetUserFavoriteSongs(limit int) []*Song {
 // Remove a set of favorite songs for a user. Must provide a logged-in sessionID.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) RemoveUserFavoriteSongs(songIDs string) {
-	log.Fatal("Not implemented due to non-clean spec")
+	log.Panic("Not implemented due to non-clean spec")
 }
 
 // Logout a user using an established session.
@@ -358,7 +369,7 @@ func (sharky *Sharky) GetUserInfo() *UserInfo {
 // and either dateEnd or recurring.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) GetUserSubscriptionDetails() *UserSubscriptionInfo {
-	log.Fatal("Not impelemented: Service does not have access to this method.")
+	log.Panic("Not impelemented: Service does not have access to this method.")
 	return nil
 }
 
@@ -443,6 +454,13 @@ func (sharky *Sharky) getSongs(limit int, method string) []*Song {
 	params["limit"] = limit
 	result := sharky.SessionCallHttp(method, params)
 
+	return sharky.processSongs(result)
+}
+
+func (sharky *Sharky) processSongs(result map[string]interface{}) []*Song {
+	if result["songs"] == nil {
+		result["songs"] = result["Songs"]
+	}
 	if songs, ok := result["songs"].([]interface{}); ok {
 		songArr := make([]*Song, 0)
 		for _, songParams := range songs {
@@ -462,39 +480,55 @@ func (sharky *Sharky) getSongs(limit int, method string) []*Song {
 
 // Useful for testing if the service is up. Returns "Hello, World" in various languages.
 func (sharky *Sharky) PingService() string {
-	// TODO impelemnt
-	// http.Get()
-	return ""
+	result := sharky.SingleSessionCallHttp("pingService", nil)
+	return result
 }
 
 // Describe service methods
 func (sharky *Sharky) GetServiceDescription() *ServiceDescription {
-	// TODO impelemnt
+	log.Panic("Not implemented")
 	return nil
 }
 
 // Undeletes a playlist.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) UndeletePlaylist(playlistID int) {
-	// TODO impelemnt
+	params := make(map[string]interface{})
+	params["playlistID"] = playlistID
+	result := sharky.SessionCallHttp("undeletePlaylist", params)
+	logMsg(result, "Playlist undelited.", "Cannot undelite playlist.")
 }
 
 // Deletes a playlist.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) DeletePlaylist(playlistID int) {
-	// TODO impelemnt
+	params := make(map[string]interface{})
+	params["playlistID"] = playlistID
+	result := sharky.SessionCallHttp("deletePlaylist", params)
+	logMsg(result, "Playlist deleted.", "Cannot delite playlist.")
 }
 
 // Get songs on a playlist. Use getPlaylist instead.
-func (sharky *Sharky) GetPlaylistSongs(playlistID string, limit int) []Song {
-	// TODO impelemnt
-	return nil
+func (sharky *Sharky) GetPlaylistSongs(playlistID string, limit int) []*Song {
+	params := make(map[string]interface{})
+	params["playlistID"] = playlistID
+	params["limit"] = limit
+	result := sharky.SessionCallHttp("getPlaylistSongs", params)
+	return sharky.processSongs(result)
 }
 
 // Get playlist info and songs.
-func (sharky *Sharky) GetPlaylist(playlistID string, limit int) *Playlist {
-	// TODO impelemnt
-	return nil
+func (sharky *Sharky) GetPlaylist(playlistID string, limit int) *PlaylistInfo {
+	params := make(map[string]interface{})
+	params["playlistID"] = playlistID
+	params["limit"] = limit
+	result := sharky.SessionCallHttp("getPlaylist", params)
+
+	playlistInfo := new(PlaylistInfo)
+	elem := getPlaylistInfoElem(playlistInfo)
+	mapToStruct(result, &elem)
+	playlistInfo.Songs = sharky.processSongs(result)
+	return playlistInfo
 }
 
 // Set playlist songs, overwrites any already saved
@@ -849,6 +883,10 @@ func (sharky *Sharky) RegisterUser(emailAddress, password, fullName, username, g
 
 func mapToStruct(params map[string]interface{}, elem *reflect.Value) {
 	for k, v := range params {
+		if _, ok := v.([]interface{}); ok {
+			// skip if the value v is array
+			continue
+		}
 		setFieldOfElem(elem, k, v)
 	}
 }
@@ -930,21 +968,7 @@ func getInt64(value interface{}) int64 {
 // Makes POST request to the API's method with params. SessionID should also
 // be provided for some of the methods. You should also provide protocol (HTTP or HTTPS)
 func makeCall(method string, params map[string]interface{}, sessionId, protocol, key, secret string) map[string]interface{} {
-	reqData := buildRequestData(key, method, sessionId, params)
-	buf, _ := json.Marshal(&reqData)
-	signature := generateSignature(buf, []byte(secret))
-	url := buildApiURL(signature, protocol)
-	body := bytes.NewReader(buf)
-	r, err := http.Post(url, CONTENT_TYPE, body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	response, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer r.Body.Close()
-
+	response := getResponse(method, params, sessionId, protocol, key, secret)
 	var resp Response
 	json.Unmarshal(response, &resp)
 
@@ -953,6 +977,37 @@ func makeCall(method string, params map[string]interface{}, sessionId, protocol,
 	}
 
 	return resp.Result
+}
+
+func makeSingleResultCall(method string, params map[string]interface{}, sessionId, protocol, key, secret string) string {
+	response := getResponse(method, params, sessionId, protocol, key, secret)
+	var resp SingleResponse
+	json.Unmarshal(response, &resp)
+
+	if resp.Errors != nil {
+		error(resp.Errors, method)
+	}
+
+	return resp.Result
+}
+
+func getResponse(method string, params map[string]interface{}, sessionId, protocol, key, secret string) []byte {
+	reqData := buildRequestData(key, method, sessionId, params)
+	buf, _ := json.Marshal(&reqData)
+	signature := generateSignature(buf, []byte(secret))
+	url := buildApiURL(signature, protocol)
+	body := bytes.NewReader(buf)
+	r, err := http.Post(url, CONTENT_TYPE, body)
+	if err != nil {
+		log.Panic(err)
+	}
+	response, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Panic(err)
+	}
+	defer r.Body.Close()
+
+	return response
 }
 
 func error(errors []map[string]interface{}, method string) {
@@ -964,7 +1019,7 @@ func error(errors []map[string]interface{}, method string) {
 		data := err["data"]
 		errMessage += fmt.Sprintf("Error Code: %v, %v [%v]\n", code, msg, data)
 	}
-	log.Fatal(errMessage)
+	log.Panic(errMessage)
 }
 
 func buildRequestData(key, method, sessionID string, params map[string]interface{}) *RequestData {
@@ -1016,7 +1071,7 @@ func logMsg(result map[string]interface{}, sucMsg, errMsg string) {
 		if suc {
 			log.Println(sucMsg)
 		} else {
-			log.Fatal(errMsg)
+			log.Panic(errMsg)
 		}
 	}
 }
