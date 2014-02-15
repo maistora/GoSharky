@@ -1,3 +1,5 @@
+
+
 Sharky
 ========
 
@@ -16,8 +18,9 @@ TODO
 * Refactoring
 
 Example
--------
-
+-------  
+  
+```go
     func findSongAndGetStream() string {  
         sharky := setUp()  
         country := sharky.GetCountry("") // returns country data for the requestor's IP  
@@ -29,7 +32,7 @@ Example
         streamDetails := sharky.GetStreamKeyStreamServer(song.SongID, country, false)  
         return streamDetails.Url  
     }  
-
+```
 
 
 License
