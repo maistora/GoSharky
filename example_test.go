@@ -24,6 +24,7 @@
 package sharky_test
 
 import (
+	"fmt"
 	"github.com/maistora/sharky"
 	"net/http"
 )
@@ -54,14 +55,14 @@ func setUp() *sharky.Sharky {
 	sharky := sharky.New("key", "secret")
 	sharky.StartSession()
 	sharky.Authenticate("username", "password")
-	songs := sharky.GetPopularSongsMonth(2)
-	country := sharky.GetCountry("")
 
 	return sharky
 }
 
 func getSongStream() string {
 	sharky := setUp()
+	country := sharky.GetCountry("")
+	songs := sharky.GetPopularSongsMonth(2)
 	streamDetails := sharky.GetStreamKeyStreamServer(songs[1].SongID, country, false)
 
 	return streamDetails.Url
@@ -110,12 +111,12 @@ func showAlbumSearchResults() {
 
 func findAndGetSongStream() string {
 	sharky := setUp()
+	country := sharky.GetCountry("") // I know it is already invoked in setUp but...
 	song := sharky.GetSongSearchResults("counting stars", country, 10, 0)[0]
 	fmt.Println(song)
 	// Output:
 	// &{38377063 Counting Stars 401901 OneRepublic 8545065 Native 8545065-20140206135006.jpg  true false 0 }
 
-	country := sharky.GetCountry("") // I know it is already invoked in setUp but...
 	streamDetails := sharky.GetStreamKeyStreamServer(song.SongID, country, false)
 
 	return streamDetails.Url
