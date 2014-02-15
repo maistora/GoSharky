@@ -115,7 +115,15 @@ type UserSubscriptionInfo struct {
 }
 
 type PlaylistInfo struct {
-	// TODO fill
+	PlaylistName        string
+	TSModified          string
+	UserID              int64
+	PlaylistDescription string
+	CoverArtFilename    string
+}
+
+func getPlaylistInfoElem(plInfo *PlaylistInfo) reflect.Value {
+	return reflect.ValueOf(plInfo).Elem()
 }
 
 type ServiceDescription struct {
@@ -325,38 +333,68 @@ func (sharky *Sharky) Logout() {
 // See Overview for documentation.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) AuthenticateToken(token string) {
+	params := make(map[string]interface{})
+	params["token"] = token
+
+	result := sharky.SessionCallHttps("authenticateToken", params)
+
+	sharky.auth(result)
 }
 
 // Get logged-in user info from sessionID
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) GetUserInfo() *UserInfo {
-	// TODO impelemnt
-	return nil
+	if sharky.UserInfo == nil {
+		result := sharky.SessionCallHttp("getUserInfo", nil)
+		userInfo := new(UserInfo)
+		elem := getUserInfoElem(userInfo)
+		mapToStruct(result, &elem)
+		sharky.UserInfo = userInfo
+	}
+	return sharky.UserInfo
 }
 
 // Get logged-in user subscription info. Returns type of subscription
 // and either dateEnd or recurring.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) GetUserSubscriptionDetails() *UserSubscriptionInfo {
-	// TODO impelemnt
+	log.Fatal("Not impelemented: Service does not have access to this method.")
 	return nil
 }
 
 // Add a favorite song for a user. Must provide a logged-in sessionID.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) AddUserFavoriteSong(songID int) {
-	// TODO impelemnt
+	params := make(map[string]interface{})
+	params["songID"] = songID
+
+	result := sharky.SessionCallHttp("addUserFavoriteSong", params)
+
+	logMsg(result, "Song added to Favorites successfully.", "Error adding song to Favorites.")
 }
 
 // Subscribe to a playlist for the logged-in user. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) SubscribePlaylist(playlistID int) {
-	// TODO impelemnt
+	params := make(map[string]interface{})
+	params["playlistID"] = playlistID
+	result := sharky.SessionCallHttp("subscribePlaylist", params)
+
+	sucMsg := "Subscribtion to playlist finished successfully"
+	errMsg := "Cannot subscribe to playlist"
+	logMsg(result, sucMsg, errMsg)
 }
 
 // Unsubscribe from a playlist for the logged-in user. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) UnsubscribePlaylist(playlistID int) {
+	params := make(map[string]interface{})
+	params["playlistID"] = playlistID
+	result := sharky.SessionCallHttp("unsubscribePlaylist", params)
+
+	sucMsg := "Unsubscribed from playlist."
+	errMsg := "Cannot upsubscribe from playlist."
+	logMsg(result, sucMsg, errMsg)
 	// TODO impelemnt
 }
 
@@ -375,8 +413,15 @@ func (sharky *Sharky) GetCountry(ip string) *Country {
 
 // Get playlist information. To get songs as well, call getPlaylist.
 func (sharky *Sharky) GetPlaylistInfo(playlistID string) *PlaylistInfo {
-	// TODO impelemnt
-	return nil
+	params := make(map[string]interface{})
+	params["playlistID"] = playlistID
+	result := sharky.SessionCallHttp("getPlaylistInfo", params)
+
+	playlistInfo := new(PlaylistInfo)
+	elem := getPlaylistInfoElem(playlistInfo)
+	mapToStruct(result, &elem)
+
+	return playlistInfo
 }
 
 // Get a subset of today's popular songs, from the Grooveshark popular billboard.
@@ -479,6 +524,10 @@ func (sharky *Sharky) Authenticate(login, password string) {
 
 	result := sharky.SessionCallHttps("authenticate", params)
 
+	sharky.auth(result)
+}
+
+func (sharky *Sharky) auth(result map[string]interface{}) {
 	if suc, ok := result["success"].(bool); ok {
 		if suc {
 			log.Println("Authentication successful.")
@@ -960,4 +1009,14 @@ func md5sum(value string) string {
 	h := md5.New()
 	io.WriteString(h, value)
 	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+func logMsg(result map[string]interface{}, sucMsg, errMsg string) {
+	if suc, ok := result["success"].(bool); ok {
+		if suc {
+			log.Println(sucMsg)
+		} else {
+			log.Fatal(errMsg)
+		}
+	}
 }
