@@ -109,7 +109,7 @@ func showAlbumSearchResults() {
 	// &{113811 Meteora 671 Linkin Park 113811.jpg true}
 }
 
-func findAndGetSongStream() string {
+func findSongAndGetStream() string {
 	sharky := setUp()
 	country := sharky.GetCountry("") // I know it is already invoked in setUp but...
 	song := sharky.GetSongSearchResults("counting stars", country, 10, 0)[0]
