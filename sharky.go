@@ -150,7 +150,16 @@ type SongInfo struct {
 }
 
 type Album struct {
-	// TODO fill
+	AlbumID          int64
+	AlbumName        string
+	ArtistID         int64
+	ArtistName       string
+	CoverArtFilename string
+	IsVerified       bool
+}
+
+func getAlbumElem(album *Album) reflect.Value {
+	return reflect.ValueOf(album).Elem()
 }
 
 type Artist struct {
@@ -653,25 +662,58 @@ func (sharky *Sharky) GetArtistPopularSongs(artistID int) []Song {
 // ================= Search =================
 
 // Perform a playlist search.
-func (sharky *Sharky) GetPlaylistSearchResults(query string, limit int) []Playlist {
+func (sharky *Sharky) GetPlaylistSearchResults(query string, limit int) []*Playlist {
 	// TODO impelemnt
 	return nil
 }
 
 // Perform an album search.
-func (sharky *Sharky) GetAlbumSearchResults(query string, limit int) []Album {
-	// TODO impelemnt
+// This method could also return Paging stats but it is not impelemented
+func (sharky *Sharky) GetAlbumSearchResults(query string, limit int) []*Album {
+	params := make(map[string]interface{})
+	params["query"] = query
+	params["limit"] = limit
+	result := sharky.SessionCallHttp("getAlbumSearchResults", params)
+
+	return sharky.processAlbums(result)
+}
+
+func (sharky *Sharky) processAlbums(result map[string]interface{}) []*Album {
+	if result["albums"] == nil {
+		result["albums"] = result["Albums"]
+	}
+	if album, ok := result["albums"].([]interface{}); ok {
+		albumArr := make([]*Album, 0)
+		for _, albumParam := range album {
+			if aParams, ok := albumParam.(map[string]interface{}); ok {
+				newAlbum := new(Album)
+				elem := getAlbumElem(newAlbum)
+				mapToStruct(aParams, &elem)
+				albumArr = append(albumArr, newAlbum)
+			}
+		}
+
+		return albumArr
+	}
+
 	return nil
 }
 
 // Perform a song search.
-func (sharky *Sharky) GetSongSearchResults(query string, country Country, limit, offset int) []Song {
-	// TODO impelemnt
-	return nil
+func (sharky *Sharky) GetSongSearchResults(query string, country *Country, limit, offset int) []*Song {
+	params := make(map[string]interface{})
+	params["query"] = query
+	params["country"] = country
+	params["limit"] = limit
+	params["offset"] = offset
+
+	result := sharky.SessionCallHttp("getSongSearchResults", params)
+
+	return sharky.processSongs(result)
 }
 
 // Perform an artist search.
-func (sharky *Sharky) GetArtistSearchResults(query string, limit int) []Artist {
+func (sharky *Sharky) GetArtistSearchResults(query string, limit int) []*Artist {
 	// TODO impelemnt
 	return nil
 }

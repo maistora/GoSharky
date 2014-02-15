@@ -29,5 +29,17 @@ func getSongPath() string {
 	country := sharky.GetCountry("")
 	streamDetails := sharky.GetStreamKeyStreamServer(songs[1].SongID, country, false)
 
+	playlists := sharky.GetUserPlaylists(5)
+	plSongs := sharky.GetPlaylistSongs("95320696", 100)
+	plInfo := sharky.GetPlaylist("95320696", 100)
+
+	fmt.Println(playlists[0])
+	fmt.Println(plSongs[0])
+	fmt.Printf("\n---- %v", plInfo)
+	fmt.Println(plInfo.Songs[0])
+	fmt.Println(sharky.PingService())
+	fmt.Println(sharky.GetAlbumSearchResults("meteora", 10)[0])
+	fmt.Println(sharky.GetSongSearchResults("counting stars", country, 10, 0)[0])
+
 	return streamDetails.Url
 }
