@@ -18,21 +18,20 @@ Example
 -------
 
 * Here is a way to get a song's stream
-``
-func findSongAndGetStream() string {
-	sharky := setUp()
-	country := sharky.GetCountry("") // returns country data for the requestor's IP
-	song := sharky.GetSongSearchResults("counting stars", country, 10, 0)[0]
-	fmt.Println(song)
-	// Output:
-	// &{38377063 Counting Stars 401901 OneRepublic 8545065 Native 8545065-20140206135006.jpg  true false 0 }
 
-	streamDetails := sharky.GetStreamKeyStreamServer(song.SongID, country, false)
+    func findSongAndGetStream() string {
+    	sharky := setUp()
+    	country := sharky.GetCountry("") // returns country data for the requestor's IP
+    	song := sharky.GetSongSearchResults("counting stars", country, 10, 0)[0]
+    	fmt.Println(song)
+    	// Output:
+    	// &{38377063 Counting Stars 401901 OneRepublic 8545065 Native 8545065-20140206135006.jpg  true false 0 }
+    
+    	streamDetails := sharky.GetStreamKeyStreamServer(song.SongID, country, false)
+    
+    	return streamDetails.Url
+    }
 
-	return streamDetails.Url
-}
-
-``
 
 
 License
