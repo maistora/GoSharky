@@ -32,18 +32,18 @@ import (
 // Start the server and Go to your browser
 // localhost:8000/sharky will redirect you to
 // the music streamed by Grooveshark
-func exampleServerStart() {
+func ExampleServerStart() {
 	http.HandleFunc("/sharky/1", popularSong)
 	http.HandleFunc("/sharky/2", customSongSearch)
 	http.ListenAndServe(":8000", nil)
 }
 
-func popularSong(w http.ResponseWriter, r *http.Request) {
+func ExampleNavigateToSongStream(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Location", getSongStream())
 	w.WriteHeader(303)
 }
 
-func customSongSearch(w http.ResponseWriter, r *http.Request) {
+func ExampleNavigateToFoundSong(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Location", findSongAndGetStream())
 	w.WriteHeader(303)
 }
@@ -51,7 +51,7 @@ func customSongSearch(w http.ResponseWriter, r *http.Request) {
 // This is sample sessionStart, authentication, song retrieve,
 // country retrieve (needed for the stream) and
 // obtain the stream URL
-func setUp() *sharky.Sharky {
+func ExampleSetUp() *sharky.Sharky {
 	sharky := sharky.New("key", "secret")
 	sharky.StartSession()
 	sharky.Authenticate("username", "password")
@@ -59,7 +59,7 @@ func setUp() *sharky.Sharky {
 	return sharky
 }
 
-func getSongStream() string {
+func ExampleSharky_GetStreamKeyStreamServer() string {
 	sharky := setUp()
 	country := sharky.GetCountry("")
 	songs := sharky.GetPopularSongsMonth(2)
@@ -68,7 +68,7 @@ func getSongStream() string {
 	return streamDetails.Url
 }
 
-func showPlaylist() {
+func ExampleSharky_GetUserPlaylists() {
 	sharky := setUp()
 	playlists := sharky.GetUserPlaylists(5)
 	fmt.Println(playlists[0])
@@ -76,7 +76,7 @@ func showPlaylist() {
 	// &{95320696 test2 2014-02-15 00:35:47}
 }
 
-func showPlaylistSongs() {
+func ExampleSharky_GetPlaylistSongs() {
 	sharky := setUp()
 	plSongs := sharky.GetPlaylistSongs("95320696", 100)
 	fmt.Println(plSongs[0])
@@ -84,7 +84,7 @@ func showPlaylistSongs() {
 	// &{29880235 Numb 671 Linkin Park 113811 Meteora 113811.jpg 1404613534 true false 0 }
 }
 
-func showPlaylistInfo() {
+func ExampleSharky_GetPlaylist() {
 	sharky := setUp()
 	plInfo := sharky.GetPlaylist("95320696", 100)
 
@@ -95,21 +95,21 @@ func showPlaylistInfo() {
 	// &{29880235 Numb 671 Linkin Park 113811 Meteora 113811.jpg 1404613534 true false 0 }
 }
 
-func pingService() {
+func ExampleSharky_PingService() {
 	sharky := setUp()
 	fmt.Println(sharky.PingService())
 	// Output: Hello world in different languages. Ex.
 	// Olá!, mundo.
 }
 
-func showAlbumSearchResults() {
+func ExampleSharky_GetAlbumSearchResults() {
 	sharky := setUp()
 	fmt.Println(sharky.GetAlbumSearchResults("meteora", 10)[0])
 	// Output:
 	// &{113811 Meteora 671 Linkin Park 113811.jpg true}
 }
 
-func findSongAndGetStream() string {
+func ExampleSharky_GetSongSearchResults_returnStream() string {
 	sharky := setUp()
 	country := sharky.GetCountry("") // I know it is already invoked in setUp but...
 	song := sharky.GetSongSearchResults("counting stars", country, 10, 0)[0]
