@@ -269,7 +269,7 @@ func (sharky *Sharky) SingleSessionCallHttp(method string, params map[string]int
 // be the respective albumID for songIDs[0] and same with artistIDs.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) AddUserLibrarySongs(songIDs, albumIDs, artistIDs string) {
-	log.Panic("Use AddUserLibrarySongsEx instead.")
+	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
 }
 
 // Get user library songs. Requires an authenticated session.
@@ -352,7 +352,7 @@ func (sharky *Sharky) GetUserFavoriteSongs(limit int) []*Song {
 // Remove a set of favorite songs for a user. Must provide a logged-in sessionID.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) RemoveUserFavoriteSongs(songIDs string) {
-	log.Panic("Not implemented due to non-clean spec")
+	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
 }
 
 // Logout a user using an established session.
@@ -438,7 +438,7 @@ func (sharky *Sharky) UnsubscribePlaylist(playlistID int) {
 func (sharky *Sharky) GetCountry(ip string) *Country {
 	params := make(map[string]interface{})
 	params["ip"] = ip
-	result := sharky.SessionCallHttp("getCountry", params)
+	result := sharky.NoSessionCallHttp("getCountry", params)
 
 	country := new(Country)
 	elem := getCountryElem(country)
@@ -451,7 +451,7 @@ func (sharky *Sharky) GetCountry(ip string) *Country {
 func (sharky *Sharky) GetPlaylistInfo(playlistID string) *PlaylistInfo {
 	params := make(map[string]interface{})
 	params["playlistID"] = playlistID
-	result := sharky.SessionCallHttp("getPlaylistInfo", params)
+	result := sharky.NoSessionCallHttp("getPlaylistInfo", params)
 
 	playlistInfo := new(PlaylistInfo)
 	elem := getPlaylistInfoElem(playlistInfo)
@@ -477,7 +477,7 @@ func (sharky *Sharky) getSongs(limit int, method string) []*Song {
 	}
 	params := make(map[string]interface{})
 	params["limit"] = limit
-	result := sharky.SessionCallHttp(method, params)
+	result := sharky.NoSessionCallHttp(method, params)
 
 	return sharky.processSongs(result)
 }
@@ -511,6 +511,7 @@ func (sharky *Sharky) PingService() string {
 
 // Describe service methods
 func (sharky *Sharky) GetServiceDescription() *ServiceDescription {
+	// TODO impl
 	log.Panic("Not implemented")
 	return nil
 }
@@ -538,7 +539,7 @@ func (sharky *Sharky) GetPlaylistSongs(playlistID string, limit int) []*Song {
 	params := make(map[string]interface{})
 	params["playlistID"] = playlistID
 	params["limit"] = limit
-	result := sharky.SessionCallHttp("getPlaylistSongs", params)
+	result := sharky.NoSessionCallHttp("getPlaylistSongs", params)
 	return sharky.processSongs(result)
 }
 
@@ -547,7 +548,7 @@ func (sharky *Sharky) GetPlaylist(playlistID string, limit int) *PlaylistInfo {
 	params := make(map[string]interface{})
 	params["playlistID"] = playlistID
 	params["limit"] = limit
-	result := sharky.SessionCallHttp("getPlaylist", params)
+	result := sharky.NoSessionCallHttp("getPlaylist", params)
 
 	playlistInfo := new(PlaylistInfo)
 	elem := getPlaylistInfoElem(playlistInfo)
@@ -559,19 +560,23 @@ func (sharky *Sharky) GetPlaylist(playlistID string, limit int) *PlaylistInfo {
 // Set playlist songs, overwrites any already saved
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) SetPlaylistSongs(playlistID int, songIDs string) {
-	// TODO impelemnt
+	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
 }
 
 // Create a new playlist, optionally adding songs to it.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) CreatePlaylist(name, songIDs string) {
-	// TODO impelemnt
+	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
 }
 
 // Renames a playlist.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) RenamePlaylist(playlistID int, name string) {
-	// TODO impelemnt
+	params := make(map[string]interface{})
+	params["playlistID"] = playlistID
+	params["name"] = name
+
+	sharky.SessionCallHttp("renamePlaylist", params)
 }
 
 // Authenticate a user using an established session, a login and an md5 of their password.
@@ -603,13 +608,24 @@ func (sharky *Sharky) auth(result map[string]interface{}) {
 
 // Get userID from username
 func (sharky *Sharky) GetUserIDFromUsername(username string) string {
-	// TODO impelemnt
+	params := make(map[string]interface{})
+	params["username"] = username
+
+	result := sharky.NoSessionCallHttp("getUserIDFromUsername", params)
+	if val, ok := result["UserID"].(string); ok {
+		return val
+	}
+
+	if val, ok := result["UserID"].(int64); ok {
+		return fmt.Sprintf("%v", val)
+	}
+
 	return ""
 }
 
 // Get meta-data information about one or more albums
 func (sharky *Sharky) GetAlbumsInfo(albumIDs string) []AlbumInfo {
-	// TODO impelemnt
+	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
 	return nil
 }
 
@@ -621,14 +637,14 @@ func (sharky *Sharky) GetAlbumSongs(albumID, limit int) []Song {
 
 // Get meta-data information about one or more artists
 func (sharky *Sharky) GetArtistsInfo(artistIDs string) []ArtistInfo {
-	// TODO impelemnt
+	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
 	return nil
 }
 
 // Get information about a song or multiple songs.
 // The songID(s) should always be passed in as an array.
 func (sharky *Sharky) GetSongsInfo(songIDs string) []SongInfo {
-	// TODO impelemnt
+	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
 	return nil
 }
 
