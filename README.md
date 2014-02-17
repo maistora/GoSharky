@@ -1,6 +1,8 @@
 
-![Bilby Stampede](http://www.citizenlunchbox.com/famous/dogs/pix/sharky.gif)![Bilby Stampede](http://maistora.badowl.net/blog-tech/wp-content/uploads/2014/02/sharky.png)
+![Bilby Stampede](http://maistora.badowl.net/blog-tech/wp-content/uploads/2014/02/sharky.gif)
 
+Sharky
+-------
 
 Package Sharky will offer support for [GrooveShark](http://grooveshark.com/) implemented in [Go](http:/golang.org).
 There are still many methods waiting to be implemented, but the most important once are good to go.
