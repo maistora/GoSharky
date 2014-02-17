@@ -1,6 +1,5 @@
 
 ![Bilby Stampede](http://maistora.badowl.net/blog-tech/wp-content/uploads/2014/02/sharky.gif)
-
 Sharky
 -------
 
