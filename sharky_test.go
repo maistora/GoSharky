@@ -71,3 +71,12 @@ func TestSongSearch(t *testing.T) {
 		t.Error("Failed to find the right song")
 	}
 }
+
+func TestGetAlbumSongs(t *testing.T) {
+	sharky := setUp()
+	songs := sharky.GetAlbumSongs("5462", 10)
+
+	if songs == nil || len(songs) == 0 {
+		t.Error("Failed to find album songs")
+	}
+}
