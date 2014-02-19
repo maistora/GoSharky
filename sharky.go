@@ -65,13 +65,13 @@ type SingleResponse struct {
 }
 
 type Country struct {
-	ID  int64
-	CC1 int64
-	CC2 int64
-	CC3 int64
-	CC4 int64
-	DMA int64
-	IPR int64
+	ID  string
+	CC1 string
+	CC2 string
+	CC3 string
+	CC4 string
+	DMA string
+	IPR string
 }
 
 func getCountryElem(country *Country) reflect.Value {
@@ -83,17 +83,17 @@ type AutoplayState struct {
 }
 
 type Song struct {
-	SongID                int64
+	SongID                string
 	SongName              string
-	ArtistID              int64
+	ArtistID              string
 	ArtistName            string
-	AlbumID               int64
+	AlbumID               string
 	AlbumName             string
 	CoverArtFilename      string
 	Popularity            string
 	IsLowBitrateAvailable bool
 	IsVerified            bool
-	Flags                 int64
+	Flags                 bool
 	TSFavorited           string
 }
 
@@ -102,10 +102,10 @@ func getSongElem(song *Song) reflect.Value {
 }
 
 type LibSong struct {
-	SongID   int64
-	AlbumID  int64
-	ArtistID int64
-	TrackID  int64
+	SongID   string
+	AlbumID  string
+	ArtistID string
+	TrackID  string
 }
 
 func getLibSongElem(libSong *LibSong) reflect.Value {
@@ -113,7 +113,7 @@ func getLibSongElem(libSong *LibSong) reflect.Value {
 }
 
 type Playlist struct {
-	PlaylistID   int64
+	PlaylistID   string
 	PlaylistName string
 	TSAdded      string
 }
@@ -123,7 +123,7 @@ func getPlaylistElem(playlist *Playlist) reflect.Value {
 }
 
 type UserInfo struct {
-	UserID     int64
+	UserID     string
 	Email      string
 	FName      string
 	LName      string
@@ -143,7 +143,7 @@ type UserSubscriptionInfo struct {
 type PlaylistInfo struct {
 	PlaylistName        string
 	TSModified          string
-	UserID              int64
+	UserID              string
 	PlaylistDescription string
 	CoverArtFilename    string
 	Songs               []*Song
@@ -170,9 +170,9 @@ type SongInfo struct {
 }
 
 type Album struct {
-	AlbumID          int64
+	AlbumID          string
 	AlbumName        string
-	ArtistID         int64
+	ArtistID         string
 	ArtistName       string
 	CoverArtFilename string
 	IsVerified       bool
@@ -189,8 +189,8 @@ type Artist struct {
 type StreamDetails struct {
 	StreamKey      string
 	Url            string
-	StreamServerID int64
-	USecs          int64
+	StreamServerID string
+	USecs          string
 }
 
 func getStreamDetailsElem(streamDetails *StreamDetails) reflect.Value {
@@ -400,7 +400,7 @@ func (sharky *Sharky) GetUserSubscriptionDetails() *UserSubscriptionInfo {
 
 // Add a favorite song for a user. Must provide a logged-in sessionID.
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) AddUserFavoriteSong(songID int) {
+func (sharky *Sharky) AddUserFavoriteSong(songID string) {
 	params := make(map[string]interface{})
 	params["songID"] = songID
 
@@ -411,7 +411,7 @@ func (sharky *Sharky) AddUserFavoriteSong(songID int) {
 
 // Subscribe to a playlist for the logged-in user. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) SubscribePlaylist(playlistID int) {
+func (sharky *Sharky) SubscribePlaylist(playlistID string) {
 	params := make(map[string]interface{})
 	params["playlistID"] = playlistID
 	result := sharky.SessionCallHttp("subscribePlaylist", params)
@@ -423,7 +423,7 @@ func (sharky *Sharky) SubscribePlaylist(playlistID int) {
 
 // Unsubscribe from a playlist for the logged-in user. Requires an authenticated session.
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) UnsubscribePlaylist(playlistID int) {
+func (sharky *Sharky) UnsubscribePlaylist(playlistID string) {
 	params := make(map[string]interface{})
 	params["playlistID"] = playlistID
 	result := sharky.SessionCallHttp("unsubscribePlaylist", params)
@@ -518,7 +518,7 @@ func (sharky *Sharky) GetServiceDescription() *ServiceDescription {
 
 // Undeletes a playlist.
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) UndeletePlaylist(playlistID int) {
+func (sharky *Sharky) UndeletePlaylist(playlistID string) {
 	params := make(map[string]interface{})
 	params["playlistID"] = playlistID
 	result := sharky.SessionCallHttp("undeletePlaylist", params)
@@ -527,7 +527,7 @@ func (sharky *Sharky) UndeletePlaylist(playlistID int) {
 
 // Deletes a playlist.
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) DeletePlaylist(playlistID int) {
+func (sharky *Sharky) DeletePlaylist(playlistID string) {
 	params := make(map[string]interface{})
 	params["playlistID"] = playlistID
 	result := sharky.SessionCallHttp("deletePlaylist", params)
@@ -559,7 +559,7 @@ func (sharky *Sharky) GetPlaylist(playlistID string, limit int) *PlaylistInfo {
 
 // Set playlist songs, overwrites any already saved
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) SetPlaylistSongs(playlistID int, songIDs string) {
+func (sharky *Sharky) SetPlaylistSongs(playlistID string, songIDs string) {
 	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
 }
 
@@ -571,7 +571,7 @@ func (sharky *Sharky) CreatePlaylist(name, songIDs string) {
 
 // Renames a playlist.
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) RenamePlaylist(playlistID int, name string) {
+func (sharky *Sharky) RenamePlaylist(playlistID string, name string) {
 	params := make(map[string]interface{})
 	params["playlistID"] = playlistID
 	params["name"] = name
@@ -630,9 +630,14 @@ func (sharky *Sharky) GetAlbumsInfo(albumIDs string) []AlbumInfo {
 }
 
 // Get songs on an album. Returns all songs, verified and unverified
-func (sharky *Sharky) GetAlbumSongs(albumID, limit int) []Song {
-	// TODO impelemnt
-	return nil
+func (sharky *Sharky) GetAlbumSongs(albumID string, limit int) []*Song {
+	params := make(map[string]interface{})
+	params["albumID"] = albumID
+	params["limit"] = limit
+
+	result := sharky.NoSessionCallHttp("getAlbumSongs", params)
+	songs := sharky.processSongs(result)
+	return songs
 }
 
 // Get meta-data information about one or more artists
@@ -649,19 +654,19 @@ func (sharky *Sharky) GetSongsInfo(songIDs string) []SongInfo {
 }
 
 // Check if an album exists
-func (sharky *Sharky) GetDoesAlbumExist(albumID int) bool {
+func (sharky *Sharky) GetDoesAlbumExist(albumID string) bool {
 	// TODO impelemnt
 	return false
 }
 
 // Check if a song exists
-func (sharky *Sharky) GetDoesSongExist(songID int) bool {
+func (sharky *Sharky) GetDoesSongExist(songID string) bool {
 	// TODO impelemnt
 	return false
 }
 
 // Check if an artist exists
-func (sharky *Sharky) GetDoesArtistExist(artistID int) bool {
+func (sharky *Sharky) GetDoesArtistExist(artistID string) bool {
 	// TODO impelemnt
 	return false
 }
@@ -674,19 +679,19 @@ func (sharky *Sharky) AuthenticateUser(username, token string) {
 }
 
 // Get an artist's verified albums
-func (sharky *Sharky) GetArtistVerifiedAlbums(artistID int) []Album {
+func (sharky *Sharky) GetArtistVerifiedAlbums(artistID string) []Album {
 	// TODO impelemnt
 	return nil
 }
 
 // Get an artist's albums, verified and unverified
-func (sharky *Sharky) GetArtistAlbums(artistID int) []Album {
+func (sharky *Sharky) GetArtistAlbums(artistID string) []Album {
 	// TODO impelemnt
 	return nil
 }
 
 // Get 100 popular songs for an artist
-func (sharky *Sharky) GetArtistPopularSongs(artistID int) []Song {
+func (sharky *Sharky) GetArtistPopularSongs(artistID string) []Song {
 	// TODO impelemnt
 	return nil
 }
@@ -754,7 +759,7 @@ func (sharky *Sharky) GetArtistSearchResults(query string, limit int) []*Artist 
 
 // Get stream key, ID, etc. from songID. Requires country object obtained from getCountry
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) GetStreamKeyStreamServer(songID int64, country *Country, lowBitrate bool) *StreamDetails {
+func (sharky *Sharky) GetStreamKeyStreamServer(songID string, country *Country, lowBitrate bool) *StreamDetails {
 	params := make(map[string]interface{})
 	params["songID"] = songID
 	params["country"] = country
@@ -778,19 +783,19 @@ func (sharky *Sharky) GetSongURLFromTinysongBase62(base62 string) *SongUrl {
 }
 
 // Get playable song URL from songID
-func (sharky *Sharky) GetSongURLFromSongID(songID int) *SongUrl {
+func (sharky *Sharky) GetSongURLFromSongID(songID string) *SongUrl {
 	// TODO impelemnt
 	return nil
 }
 
 // Get playlist URL from playlistID
-func (sharky *Sharky) GetPlaylistURLFromPlaylistID(playlistID int) *PlaylistUrl {
+func (sharky *Sharky) GetPlaylistURLFromPlaylistID(playlistID string) *PlaylistUrl {
 	// TODO impelemnt
 	return nil
 }
 
 // Get a song's Tinysong.com url.
-func (sharky *Sharky) GetTinysongURLFromSongID(songID int) *TinysongUrl {
+func (sharky *Sharky) GetTinysongURLFromSongID(songID string) *TinysongUrl {
 	// TODO impelemnt
 	return nil
 }
@@ -798,13 +803,13 @@ func (sharky *Sharky) GetTinysongURLFromSongID(songID int) *TinysongUrl {
 // ================= Users (no auth) =================
 
 // Get playlists created by a userID. Does not require an authenticated session.
-func (sharky *Sharky) GetUserPlaylistsByUserID(userID, limit int) []Playlist {
+func (sharky *Sharky) GetUserPlaylistsByUserID(userID string, limit int) []Playlist {
 	// TODO impelemnt
 	return nil
 }
 
 // Get user info from userID
-func (sharky *Sharky) GetUserInfoFromUserID(userID int) *UserInfo {
+func (sharky *Sharky) GetUserInfoFromUserID(userID string) *UserInfo {
 	// TODO impelemnt
 	return nil
 }
@@ -812,7 +817,7 @@ func (sharky *Sharky) GetUserInfoFromUserID(userID int) *UserInfo {
 // ================= Recs =================
 
 // Get similar artist for a given artistID.
-func (sharky *Sharky) GetSimilarArtists(artistID, limit, page int) []Artist {
+func (sharky *Sharky) GetSimilarArtists(artistID string, limit, page int) []Artist {
 	// TODO impelemnt
 	return nil
 }
@@ -859,14 +864,14 @@ func (sharky *Sharky) GetAutocompleteSearchResults(query, typeParam string, limi
 // Requires country object obtained from getCountry and a logged-in
 // sessionID from a Grooveshark Anywhere subscriber.
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) GetSubscriberStreamKey(songID int, country Country, lowBitrate bool, uniqueID string) *StreamKey {
+func (sharky *Sharky) GetSubscriberStreamKey(songID string, country Country, lowBitrate bool, uniqueID string) *StreamKey {
 	// TODO impelemnt
 	return nil
 }
 
 // Mark a song as having been played for greater than or equal to 30 seconds.
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) MarkStreamKeyOver30Secs(streamKey string, streamServerID int, uniqueID string) {
+func (sharky *Sharky) MarkStreamKeyOver30Secs(streamKey string, streamServerID string, uniqueID string) {
 	// TODO impelemnt
 }
 
@@ -875,7 +880,7 @@ func (sharky *Sharky) MarkStreamKeyOver30Secs(streamKey string, streamServerID i
 // Mark a song as complete (played for greater than or equal to 30 seconds,
 // and having reached the last second either through seeking or normal playback).
 // Note: You must provide a sessionID with this method.
-func (sharky *Sharky) MarkSongComplete(songID int, streamKey string, streamServerID int, autoplayState AutoplayState) {
+func (sharky *Sharky) MarkSongComplete(songID, streamKey string, streamServerID int, autoplayState AutoplayState) {
 	// TODO impelemnt
 }
 
@@ -894,7 +899,7 @@ func (sharky *Sharky) GetAutoplayTags() []Tag {
 }
 
 // Start autoplay using a tag and grab a relevant song
-func (sharky *Sharky) StartAutoplayTag(tagID int) {
+func (sharky *Sharky) StartAutoplayTag(tagID string) {
 	// TODO impelemnt
 }
 
@@ -974,10 +979,14 @@ func setFieldOfElem(elem *reflect.Value, key string, val interface{}) {
 
 	switch field.Kind() {
 	case reflect.String:
-		if v, ok := val.(string); ok {
-			field.SetString(v)
+		iVal := getInt64(val)
+		if iVal != -1 {
+			field.SetString(fmt.Sprintf("%v", iVal))
+		} else {
+			field.SetString(fmt.Sprintf("%v", val))
 		}
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		log.Println("KEY: " + key)
 		v := getInt64(val)
 		field.SetInt(v)
 	case reflect.Float32, reflect.Float64:
@@ -1033,8 +1042,7 @@ func getInt64(value interface{}) int64 {
 		return int64(v)
 	}
 
-	log.Fatal("!!!!!!!!!!! CANNOT PARSE INT VALUE !!!!!!!!!!!!")
-	return 0
+	return -1
 }
 
 // ==================================== Util section ==================================
