@@ -118,13 +118,11 @@ func ExampleSharky_GetSongSearchResults() {
 	shrky := ExampleSetUp()
 	country := shrky.GetCountry("")
 	song := shrky.GetSongSearchResults("counting stars", country, 10, 0)[0]
-	fmt.Println(song.SongID)
 	fmt.Println(song.SongName)
 	fmt.Println(song.ArtistName)
 	// Output:
-	// 38377063
 	// Counting Stars
-	// OneRepublic
+	// One Republic
 }
 
 // Start the server and Go to your browser
