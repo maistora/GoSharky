@@ -653,12 +653,7 @@ func (sharky *Sharky) GetDoesAlbumExist(albumID string) bool {
 	params := make(map[string]interface{})
 	params["albumID"] = albumID
 
-	result := sharky.SingleCallHttp("getDoesAlbumExist", params)
-	if val, ok := result.(bool); ok {
-		return val
-	}
-
-	return false
+	return sharky.getSingleBoolResult(params, "getDoesAlbumExist")
 }
 
 // Check if a song exists
@@ -666,17 +661,23 @@ func (sharky *Sharky) GetDoesSongExist(songID string) bool {
 	params := make(map[string]interface{})
 	params["songID"] = songID
 
-	result := sharky.SingleCallHttp("getDoesSongExist", params)
-	if val, ok := result.(bool); ok {
-		return val
-	}
-
-	return false
+	return sharky.getSingleBoolResult(params, "getDoesSongExist")
 }
 
 // Check if an artist exists
 func (sharky *Sharky) GetDoesArtistExist(artistID string) bool {
-	// TODO impelemnt
+	params := make(map[string]interface{})
+	params["artistID"] = artistID
+
+	return sharky.getSingleBoolResult(params, "getDoesArtistExist")
+}
+
+func (sharky *Sharky) getSingleBoolResult(params map[string]interface{}, method string) bool {
+	result := sharky.SingleCallHttp(method, params)
+	if val, ok := result.(bool); ok {
+		return val
+	}
+
 	return false
 }
 

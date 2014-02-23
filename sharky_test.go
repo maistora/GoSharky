@@ -107,3 +107,12 @@ func TestGetDoesNotSongExist(t *testing.T) {
 		t.Error("Found song but it does not exist")
 	}
 }
+
+func TestGetDoesArtistExist(t *testing.T) {
+	sharky := setUp()
+	doesArtistExist := sharky.GetDoesArtistExist("1000")
+
+	if !doesArtistExist {
+		t.Error("Did not find artist but it exists.")
+	}
+}
