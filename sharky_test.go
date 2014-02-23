@@ -25,10 +25,10 @@ package sharky
 
 import "testing"
 
-const KEY = "golang_nikolay"
-const SECRET = "3a27a148229e9daceb45e263646b8d8b"
-const LOGIN = "master033+grooveshark@gmail.com"
-const PASSWORD = "Mukosolv@n123grooveshark"
+const KEY = ""
+const SECRET = ""
+const LOGIN = ""
+const PASSWORD = ""
 
 func setUp() *Sharky {
 	return New(KEY, SECRET)
@@ -86,6 +86,24 @@ func TestGetDoesAlbumExist(t *testing.T) {
 	doesAlbumExist := sharky.GetDoesAlbumExist("1000")
 
 	if !doesAlbumExist {
+		t.Error("Failed to find album songs")
+	}
+}
+
+func TestGetDoesSongExist(t *testing.T) {
+	sharky := setUp()
+	doesSongExist := sharky.GetDoesSongExist("123456")
+
+	if !doesSongExist {
+		t.Error("Failed to find album songs")
+	}
+}
+
+func TestGetDoesNotSongExist(t *testing.T) {
+	sharky := setUp()
+	doesSongExist := sharky.GetDoesSongExist("1234")
+
+	if doesSongExist {
 		t.Error("Failed to find album songs")
 	}
 }

@@ -663,7 +663,14 @@ func (sharky *Sharky) GetDoesAlbumExist(albumID string) bool {
 
 // Check if a song exists
 func (sharky *Sharky) GetDoesSongExist(songID string) bool {
-	// TODO impelemnt
+	params := make(map[string]interface{})
+	params["songID"] = songID
+
+	result := sharky.SingleCallHttp("getDoesSongExist", params)
+	if val, ok := result.(bool); ok {
+		return val
+	}
+
 	return false
 }
 
