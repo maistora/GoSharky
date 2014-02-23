@@ -95,7 +95,7 @@ func TestGetDoesSongExist(t *testing.T) {
 	doesSongExist := sharky.GetDoesSongExist("123456")
 
 	if !doesSongExist {
-		t.Error("Failed to find album songs")
+		t.Error("Failed to find song but it exists")
 	}
 }
 
@@ -104,6 +104,6 @@ func TestGetDoesNotSongExist(t *testing.T) {
 	doesSongExist := sharky.GetDoesSongExist("1234")
 
 	if doesSongExist {
-		t.Error("Failed to find album songs")
+		t.Error("Found song but it does not exist")
 	}
 }
