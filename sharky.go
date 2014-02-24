@@ -488,10 +488,8 @@ func (sharky *Sharky) processSongs(result map[string]interface{}) []*Song {
 				songArr = append(songArr, song)
 			}
 		}
-
 		return songArr
 	}
-
 	return nil
 }
 
@@ -507,7 +505,7 @@ func (sharky *Sharky) PingService() string {
 // Describe service methods
 func (sharky *Sharky) GetServiceDescription() *ServiceDescription {
 	// TODO impl
-	log.Panic("Not implemented")
+	log.Panic("Not implemented - too long implementation - left for lager")
 	return nil
 }
 
@@ -685,23 +683,27 @@ func (sharky *Sharky) getSingleBoolResult(params map[string]interface{}, method 
 // Please use the authenticate method instead.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) AuthenticateUser(username, token string) {
-	// TODO impelemnt
+	panic("Not implemented - better use authenticate method instead.")
 }
 
 // Get an artist's verified albums
-func (sharky *Sharky) GetArtistVerifiedAlbums(artistID string) []Album {
-	// TODO impelemnt
-	return nil
+func (sharky *Sharky) GetArtistVerifiedAlbums(artistID string) []*Album {
+	params := make(map[string]interface{})
+	params["artistID"] = artistID
+
+	result := sharky.CallWithHttp("getArtistVerifiedAlbums", params)
+
+	return sharky.processAlbums(result)
 }
 
 // Get an artist's albums, verified and unverified
-func (sharky *Sharky) GetArtistAlbums(artistID string) []Album {
+func (sharky *Sharky) GetArtistAlbums(artistID string) []*Album {
 	// TODO impelemnt
 	return nil
 }
 
 // Get 100 popular songs for an artist
-func (sharky *Sharky) GetArtistPopularSongs(artistID string) []Song {
+func (sharky *Sharky) GetArtistPopularSongs(artistID string) []*Song {
 	// TODO impelemnt
 	return nil
 }
