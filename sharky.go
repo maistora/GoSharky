@@ -698,8 +698,12 @@ func (sharky *Sharky) GetArtistVerifiedAlbums(artistID string) []*Album {
 
 // Get an artist's albums, verified and unverified
 func (sharky *Sharky) GetArtistAlbums(artistID string) []*Album {
-	// TODO impelemnt
-	return nil
+	params := make(map[string]interface{})
+	params["artistID"] = artistID
+
+	result := sharky.CallWithHttp("getArtistAlbums", params)
+
+	return sharky.processAlbums(result)
 }
 
 // Get 100 popular songs for an artist

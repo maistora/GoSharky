@@ -134,3 +134,21 @@ func TestGetArtistVerifiedAlbumsWithoutAlbums(t *testing.T) {
 		t.Error("Found unxisting verified albums for this artist ID.")
 	}
 }
+
+func TestGetArtistAlbums(t *testing.T) {
+	sharky := setUp()
+	albums := sharky.GetArtistAlbums("2")
+
+	if albums == nil || len(albums) == 0 {
+		t.Error("Failed to find existing albums for artist.")
+	}
+}
+
+func TestGetArtistAlbumsWithoutAlbums(t *testing.T) {
+	sharky := setUp()
+	albums := sharky.GetArtistAlbums("100000")
+
+	if len(albums) != 0 {
+		t.Error("Found unexisting albums for artist.")
+	}
+}
