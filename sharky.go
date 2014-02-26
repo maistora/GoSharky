@@ -708,8 +708,10 @@ func (sharky *Sharky) GetArtistAlbums(artistID string) []*Album {
 
 // Get 100 popular songs for an artist
 func (sharky *Sharky) GetArtistPopularSongs(artistID string) []*Song {
-	// TODO impelemnt
-	return nil
+	params := make(map[string]interface{})
+	params["artistID"] = artistID
+	result := sharky.CallWithHttp("getArtistPopularSongs", params)
+	return sharky.processSongs(result)
 }
 
 // ================= Search =================

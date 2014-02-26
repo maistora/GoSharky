@@ -152,3 +152,21 @@ func TestGetArtistAlbumsWithoutAlbums(t *testing.T) {
 		t.Error("Found unexisting albums for artist.")
 	}
 }
+
+func TestGetArtistPopularSongs(t *testing.T) {
+	sharky := setUp()
+	songs := sharky.GetArtistPopularSongs("2")
+
+	if songs == nil || len(songs) == 0 {
+		t.Error("Failed to find popular songs for artist.")
+	}
+}
+
+func TestGetArtistPopularSongsWithoutSongs(t *testing.T) {
+	sharky := setUp()
+	songs := sharky.GetArtistPopularSongs("100000")
+
+	if len(songs) != 0 {
+		t.Error("Found unexisting popular songs for artist.")
+	}
+}

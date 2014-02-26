@@ -125,6 +125,16 @@ func ExampleSharky_GetSongSearchResults() {
 	// One Republic
 }
 
+func ExampleSharky_GetArtistPopularSongs() {
+	shrky := sharky.New(KEY, SECRET)
+	song := shrky.GetArtistPopularSongs("2")[0]
+	fmt.Println(song.SongName)
+	fmt.Println(song.ArtistName)
+	// Output:
+	// House of Jealous Lovers
+	// The Rapture
+}
+
 // Start the server and Go to your browser
 // localhost:8000/sharky will redirect you to
 // the music streamed by Grooveshark
