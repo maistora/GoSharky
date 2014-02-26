@@ -170,3 +170,12 @@ func TestGetArtistPopularSongsWithoutSongs(t *testing.T) {
 		t.Error("Found unexisting popular songs for artist.")
 	}
 }
+
+func TestGetPlaylistSearchResults(t *testing.T) {
+	sharky := setUp()
+	playlists := sharky.GetPlaylistSearchResults("Meteora", 5)
+
+	if playlists == nil || len(playlists) == 0 {
+		t.Error("Failed to find playlists.")
+	}
+}

@@ -135,6 +135,24 @@ func ExampleSharky_GetArtistPopularSongs() {
 	// The Rapture
 }
 
+func ExampleSharky_GetPlaylistSearchResult() {
+	shrky := ExampleSetUp()
+	playlist := shrky.GetPlaylistSearchResults("Meteora", 5)[0]
+	fmt.Println(playlist.PlaylistID)
+	fmt.Println(playlist.PlaylistName)
+	fmt.Println(playlist.TSAdded)
+	fmt.Println(playlist.UserID)
+	fmt.Println(playlist.FName)
+	fmt.Println(playlist.LName)
+	// Output:
+	// 34658177
+	// Meteora
+	// 0
+	// 5234899
+	// Daron
+	// Malakian
+}
+
 // Start the server and Go to your browser
 // localhost:8000/sharky will redirect you to
 // the music streamed by Grooveshark
