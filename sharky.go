@@ -116,6 +116,9 @@ type Playlist struct {
 	PlaylistID   string
 	PlaylistName string
 	TSAdded      string
+	UserID       string
+	FName        string
+	LName        string
 }
 
 func getPlaylistElem(playlist *Playlist) reflect.Value {
@@ -718,7 +721,32 @@ func (sharky *Sharky) GetArtistPopularSongs(artistID string) []*Song {
 
 // Perform a playlist search.
 func (sharky *Sharky) GetPlaylistSearchResults(query string, limit int) []*Playlist {
-	// TODO impelemnt
+	params := make(map[string]interface{})
+	params["query"] = query
+	params["limit"] = limit
+	result := sharky.CallWithHttp("getPlaylistSearchResults", params)
+
+	return sharky.processPlaylists(result)
+}
+
+func (sharky *Sharky) processPlaylists(result map[string]interface{}) []*Playlist {
+	if result["playlists"] == nil {
+		result["playlists"] = result["Playlists"]
+	}
+	if playlist, ok := result["playlists"].([]interface{}); ok {
+		playlistArr := make([]*Playlist, 0)
+		for _, playlistParam := range playlist {
+			if plParam, ok := playlistParam.(map[string]interface{}); ok {
+				newPlaylist := new(Playlist)
+				elem := getPlaylistElem(newPlaylist)
+				mapToStruct(plParam, &elem)
+				playlistArr = append(playlistArr, newPlaylist)
+			}
+		}
+
+		return playlistArr
+	}
+
 	return nil
 }
 
@@ -999,9 +1027,9 @@ func setFieldOfElem(elem *reflect.Value, key string, val interface{}) {
 	case reflect.String:
 		iVal := getInt64(val)
 		if iVal != -1 {
-			field.SetString(fmt.Sprintf("%v", iVal))
+			field.SetString(strings.TrimSpace(fmt.Sprintf("%v", iVal)))
 		} else {
-			field.SetString(fmt.Sprintf("%v", val))
+			field.SetString(strings.TrimSpace(fmt.Sprintf("%v", val)))
 		}
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		log.Println("KEY: " + key)
@@ -1153,7 +1181,7 @@ func buildApiURL(sig, protocol string) string {
 
 // Util method to check empty values
 func isEmpty(value string) bool {
-	if len(strings.Trim(value, " ")) == 0 {
+	if len(strings.TrimSpace(value)) == 0 {
 		return true
 	} else {
 		return false
