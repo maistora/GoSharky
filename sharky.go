@@ -829,9 +829,15 @@ func (sharky *Sharky) GetSongURLFromTinysongBase62(base62 string) *SongUrl {
 }
 
 // Get playable song URL from songID
-func (sharky *Sharky) GetSongURLFromSongID(songID string) *SongUrl {
-	// TODO impelemnt
-	return nil
+func (sharky *Sharky) GetSongURLFromSongID(songID string) string {
+	params := make(map[string]interface{})
+	params["songID"] = songID
+
+	result := sharky.CallWithHttp("GetSongURLFromSongID", params)
+	if val, ok := result["url"].(string); ok {
+		return val
+	}
+	return ""
 }
 
 // Get playlist URL from playlistID

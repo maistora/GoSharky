@@ -179,3 +179,12 @@ func TestGetPlaylistSearchResults(t *testing.T) {
 		t.Error("Failed to find playlists.")
 	}
 }
+
+func TestGetSongURLFromSongID(t *testing.T) {
+	sharky := setUp()
+	url := sharky.GetSongURLFromSongID("123456")
+
+	if url == "" || url != "http://grooveshark.com/s/Breakin+Up/F71EB?src=3" {
+		t.Error("Failed to find song URL from song ID.")
+	}
+}
