@@ -188,3 +188,12 @@ func TestGetSongURLFromSongID(t *testing.T) {
 		t.Error("Failed to find song URL from song ID.")
 	}
 }
+
+func TestGetPlaylistURLFromPlaylistID(t *testing.T) {
+	sharky := setUp()
+	url := sharky.GetPlaylistURLFromPlaylistID("1880")
+
+	if url == "" || url != "http://listen.grooveshark.com/playlist/~/1880" {
+		t.Error("Failed to find song URL from song ID.")
+	}
+}

@@ -841,9 +841,15 @@ func (sharky *Sharky) GetSongURLFromSongID(songID string) string {
 }
 
 // Get playlist URL from playlistID
-func (sharky *Sharky) GetPlaylistURLFromPlaylistID(playlistID string) *PlaylistUrl {
-	// TODO impelemnt
-	return nil
+func (sharky *Sharky) GetPlaylistURLFromPlaylistID(playlistID string) string {
+	params := make(map[string]interface{})
+	params["playlistID"] = playlistID
+
+	result := sharky.CallWithHttp("getPlaylistURLFromPlaylistID", params)
+	if val, ok := result["url"].(string); ok {
+		return val
+	}
+	return ""
 }
 
 // Get a song's Tinysong.com url.
