@@ -197,3 +197,12 @@ func TestGetPlaylistURLFromPlaylistID(t *testing.T) {
 		t.Error("Failed to find song URL from song ID.")
 	}
 }
+
+func TestGetTinysongURLFromSongID(t *testing.T) {
+	sharky := setUp()
+	url := sharky.GetTinysongURLFromSongID("123456")
+
+	if url == "" || url != "http://tinysong.com/78KY" {
+		t.Error("Failed to find song Tiny URL from song ID.")
+	}
+}

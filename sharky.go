@@ -833,11 +833,7 @@ func (sharky *Sharky) GetSongURLFromSongID(songID string) string {
 	params := make(map[string]interface{})
 	params["songID"] = songID
 
-	result := sharky.CallWithHttp("GetSongURLFromSongID", params)
-	if val, ok := result["url"].(string); ok {
-		return val
-	}
-	return ""
+	return sharky.getUrl("getSongURLFromSongID", params)
 }
 
 // Get playlist URL from playlistID
@@ -845,17 +841,23 @@ func (sharky *Sharky) GetPlaylistURLFromPlaylistID(playlistID string) string {
 	params := make(map[string]interface{})
 	params["playlistID"] = playlistID
 
-	result := sharky.CallWithHttp("getPlaylistURLFromPlaylistID", params)
+	return sharky.getUrl("getPlaylistURLFromPlaylistID", params)
+}
+
+// Get a song's Tinysong.com url.
+func (sharky *Sharky) GetTinysongURLFromSongID(songID string) string {
+	params := make(map[string]interface{})
+	params["songID"] = songID
+
+	return sharky.getUrl("getTinysongURLFromSongID", params)
+}
+
+func (sharky *Sharky) getUrl(method string, params map[string]interface{}) string {
+	result := sharky.CallWithHttp(method, params)
 	if val, ok := result["url"].(string); ok {
 		return val
 	}
 	return ""
-}
-
-// Get a song's Tinysong.com url.
-func (sharky *Sharky) GetTinysongURLFromSongID(songID string) *TinysongUrl {
-	// TODO impelemnt
-	return nil
 }
 
 // ================= Users (no auth) =================
