@@ -130,7 +130,7 @@ func ExampleSharky_GetArtistPopularSongs() {
 	song := shrky.GetArtistPopularSongs("2")[0]
 	fmt.Println(song.SongName)
 	fmt.Println(song.ArtistName)
-	// Output:
+	// // Output: // Too often changes the result
 	// House of Jealous Lovers
 	// The Rapture
 }

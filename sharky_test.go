@@ -206,3 +206,16 @@ func TestGetTinysongURLFromSongID(t *testing.T) {
 		t.Error("Failed to find song Tiny URL from song ID.")
 	}
 }
+
+func TestGetArtistSearchResults(t *testing.T) {
+	sharky := setUp()
+	artist := sharky.GetArtistSearchResults("Metallica", 10)[0]
+
+	if artist == nil {
+		t.Error("Failed to find artist.")
+	}
+
+	if artist.ArtistID != "676" {
+		t.Error("Failed to find the correct artist.")
+	}
+}

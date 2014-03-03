@@ -186,7 +186,13 @@ func getAlbumElem(album *Album) reflect.Value {
 }
 
 type Artist struct {
-	// TODO fill
+	ArtistID   string
+	ArtistName string
+	IsVerified bool
+}
+
+func getArtistElem(artist *Artist) reflect.Value {
+	return reflect.ValueOf(artist).Elem()
 }
 
 type StreamDetails struct {
@@ -797,7 +803,33 @@ func (sharky *Sharky) GetSongSearchResults(query string, country *Country, limit
 
 // Perform an artist search.
 func (sharky *Sharky) GetArtistSearchResults(query string, limit int) []*Artist {
-	// TODO impelemnt
+	params := make(map[string]interface{})
+	params["query"] = query
+	params["limit"] = limit
+
+	result := sharky.CallWithHttp("getArtistSearchResults", params)
+
+	return sharky.processArtists(result)
+}
+
+func (sharky *Sharky) processArtists(result map[string]interface{}) []*Artist {
+	if result["artists"] == nil {
+		result["artists"] = result["Artists"]
+	}
+	if artist, ok := result["artists"].([]interface{}); ok {
+		artistArr := make([]*Artist, 0)
+		for _, artistParam := range artist {
+			if aParams, ok := artistParam.(map[string]interface{}); ok {
+				newArtist := new(Artist)
+				elem := getArtistElem(newArtist)
+				mapToStruct(aParams, &elem)
+				artistArr = append(artistArr, newArtist)
+			}
+		}
+
+		return artistArr
+	}
+
 	return nil
 }
 
@@ -825,6 +857,7 @@ func (sharky *Sharky) GetStreamKeyStreamServer(songID string, country *Country, 
 // Get Grooveshark URL for tinysong base 62.
 func (sharky *Sharky) GetSongURLFromTinysongBase62(base62 string) *SongUrl {
 	// TODO impelemnt
+	panic("Not implemented")
 	return nil
 }
 
