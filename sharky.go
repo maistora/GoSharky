@@ -36,6 +36,9 @@ const HTTPS = "https://"
 const HTTP = "http://"
 const CONTENT_TYPE = "application/json;charset=utf-8"
 
+const NO_ACCESS_ERR = "Our web services key does not have access to the invoked method."
+const METHOD_NOT_IMPL_ERR = "This method is not yet implemented due to lack of knowledge what is the IDs string format"
+
 func New(key, secret string) *Sharky {
 	return new(Sharky).Init(key, secret)
 }
@@ -74,7 +77,7 @@ func (sharky *Sharky) SingleCallHttp(method string, params map[string]interface{
 // be the respective albumID for songIDs[0] and same with artistIDs.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) AddUserLibrarySongs(songIDs, albumIDs, artistIDs string) {
-	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
+	log.Panic(METHOD_NOT_IMPL_ERR)
 }
 
 // Get user library songs. Requires an authenticated session.
@@ -157,7 +160,7 @@ func (sharky *Sharky) GetUserFavoriteSongs(limit int) []*Song {
 // Remove a set of favorite songs for a user. Must provide a logged-in sessionID.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) RemoveUserFavoriteSongs(songIDs string) {
-	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
+	log.Panic(METHOD_NOT_IMPL_ERR)
 }
 
 // Logout a user using an established session.
@@ -366,13 +369,13 @@ func (sharky *Sharky) GetPlaylist(playlistID string, limit int) *PlaylistInfo {
 // Set playlist songs, overwrites any already saved
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) SetPlaylistSongs(playlistID string, songIDs string) {
-	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
+	log.Panic(METHOD_NOT_IMPL_ERR)
 }
 
 // Create a new playlist, optionally adding songs to it.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) CreatePlaylist(name, songIDs string) {
-	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
+	log.Panic(METHOD_NOT_IMPL_ERR)
 }
 
 // Renames a playlist.
@@ -431,7 +434,7 @@ func (sharky *Sharky) GetUserIDFromUsername(username string) string {
 
 // Get meta-data information about one or more albums
 func (sharky *Sharky) GetAlbumsInfo(albumIDs string) []AlbumInfo {
-	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
+	log.Panic(METHOD_NOT_IMPL_ERR)
 	return nil
 }
 
@@ -448,14 +451,14 @@ func (sharky *Sharky) GetAlbumSongs(albumID string, limit int) []*Song {
 
 // Get meta-data information about one or more artists
 func (sharky *Sharky) GetArtistsInfo(artistIDs string) []ArtistInfo {
-	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
+	log.Panic(METHOD_NOT_IMPL_ERR)
 	return nil
 }
 
 // Get information about a song or multiple songs.
 // The songID(s) should always be passed in as an array.
 func (sharky *Sharky) GetSongsInfo(songIDs string) []SongInfo {
-	log.Panic("This method is not yet implemented due to lack of knowledge what is the IDs string format")
+	log.Panic(METHOD_NOT_IMPL_ERR)
 	return nil
 }
 
@@ -699,13 +702,13 @@ func (sharky *Sharky) getUrl(method string, params map[string]interface{}) strin
 
 // Get playlists created by a userID. Does not require an authenticated session.
 func (sharky *Sharky) GetUserPlaylistsByUserID(userID string, limit int) []Playlist {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 	return nil
 }
 
 // Get user info from userID
 func (sharky *Sharky) GetUserInfoFromUserID(userID string) *UserInfo {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 	return nil
 }
 
@@ -748,21 +751,31 @@ func (sharky *Sharky) StartSession() {
 // Gets a trial for an application and the provided uniqueID or logged in user.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) GetTrialInfo(uniqueID string) *TrialInfo {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 	return nil
 }
 
 // Starts a trial for a user bound to your application and the provided uniqueID.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) CreateTrial(uniqueID string) {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 }
 
 // ================= Autocomplete =================
 
 // Autocomplete search. Type parameter is 'music', 'playlist', or 'user'. Returns an array of words.
 func (sharky *Sharky) GetAutocompleteSearchResults(query, typeParam string, limit int) []string {
-	// TODO impelemnt
+	params := make(map[string]interface{})
+	params["query"] = query
+	params["type"] = typeParam // music, playlist or user
+	params["limit"] = limit
+
+	result := sharky.CallWithHttp("getAutocompleteSearchResults", params)
+
+	values := result["words"]
+	if words, ok := values.([]interface{}); ok {
+		return extractNonEmptyStrings(words)
+	}
 	return nil
 }
 

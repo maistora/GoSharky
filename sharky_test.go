@@ -231,3 +231,12 @@ func TestGetSimilarArtists(t *testing.T) {
 		t.Error("Failed to find artists for existing similarities")
 	}
 }
+
+func TestGetAutocompleteSearchResults(t *testing.T) {
+	sharky := setUp()
+	words := sharky.GetAutocompleteSearchResults("metall", "music", 10)
+
+	if words == nil || len(words) == 0 {
+		t.Error("Failed to find words")
+	}
+}

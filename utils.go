@@ -135,6 +135,16 @@ func isEmpty(value string) bool {
 	}
 }
 
+func extractNonEmptyStrings(arr []interface{}) []string {
+	words := make([]string, 0)
+	for _, val := range arr {
+		if word, ok := val.(string); ok && !isEmpty(word) {
+			words = append(words, word)
+		}
+	}
+	return words
+}
+
 func md5sum(value string) string {
 	h := md5.New()
 	io.WriteString(h, value)
