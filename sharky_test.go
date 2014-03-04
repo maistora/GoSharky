@@ -61,7 +61,6 @@ func TestAuthentication(t *testing.T) {
 func TestSongSearch(t *testing.T) {
 	sharky := setUp()
 	sharky.StartSession()
-	sharky.Authenticate(LOGIN, PASSWORD)
 	country := sharky.GetCountry("")
 	song := sharky.GetSongSearchResults("counting stars", country, 10, 0)[0]
 	if song == nil {
@@ -217,5 +216,18 @@ func TestGetArtistSearchResults(t *testing.T) {
 
 	if artist.ArtistID != "676" {
 		t.Error("Failed to find the correct artist.")
+	}
+}
+
+func TestGetSimilarArtists(t *testing.T) {
+	sharky := setUp()
+	artists := sharky.GetSimilarArtists("12345", 10, 1)
+
+	if artists == nil {
+		t.Error("Failed to find artists")
+	}
+
+	if len(artists) == 0 {
+		t.Error("Failed to find artists for existing similarities")
 	}
 }

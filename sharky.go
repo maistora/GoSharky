@@ -826,10 +826,8 @@ func (sharky *Sharky) processArtists(result map[string]interface{}) []*Artist {
 				artistArr = append(artistArr, newArtist)
 			}
 		}
-
 		return artistArr
 	}
-
 	return nil
 }
 
@@ -910,8 +908,21 @@ func (sharky *Sharky) GetUserInfoFromUserID(userID string) *UserInfo {
 // ================= Recs =================
 
 // Get similar artist for a given artistID.
-func (sharky *Sharky) GetSimilarArtists(artistID string, limit, page int) []Artist {
-	// TODO impelemnt
+func (sharky *Sharky) GetSimilarArtists(artistID string, limit, page int) []*Artist {
+	params := make(map[string]interface{})
+	params["artistID"] = artistID
+	params["limit"] = limit
+	params["page"] = page
+
+	result := sharky.CallWithHttp("GetSimilarArtists", params)
+
+	artistArr := result["artists"]
+	if artistArr != nil {
+		if val, ok := artistArr.(map[string]interface{}); ok {
+			return sharky.processArtists(val)
+		}
+	}
+
 	return nil
 }
 
