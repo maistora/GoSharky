@@ -72,6 +72,10 @@ type AutoplayState struct {
 	QueuedSongs                   map[string]int64
 }
 
+func getAutoplayStateElem(state *AutoplayState) reflect.Value {
+	return reflect.ValueOf(state).Elem()
+}
+
 type Song struct {
 	SongID                string
 	SongName              string
