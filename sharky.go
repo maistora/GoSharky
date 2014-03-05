@@ -774,7 +774,7 @@ func (sharky *Sharky) GetAutocompleteSearchResults(query, typeParam string, limi
 
 	values := result["words"]
 	if words, ok := values.([]interface{}); ok {
-		return extractNonEmptyStrings(words)
+		return toStringArray(words)
 	}
 	return nil
 }
@@ -786,14 +786,14 @@ func (sharky *Sharky) GetAutocompleteSearchResults(query, typeParam string, limi
 // sessionID from a Grooveshark Anywhere subscriber.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) GetSubscriberStreamKey(songID string, country Country, lowBitrate bool, uniqueID string) *StreamKey {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 	return nil
 }
 
 // Mark a song as having been played for greater than or equal to 30 seconds.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) MarkStreamKeyOver30Secs(streamKey string, streamServerID string, uniqueID string) {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 }
 
 // ================= Subscriber streams =================

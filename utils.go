@@ -135,7 +135,7 @@ func isEmpty(value string) bool {
 	}
 }
 
-func extractNonEmptyStrings(arr []interface{}) []string {
+func toStringArray(arr []interface{}) []string {
 	words := make([]string, 0)
 	for _, val := range arr {
 		if word, ok := val.(string); ok && !isEmpty(word) {
