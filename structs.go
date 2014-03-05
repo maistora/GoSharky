@@ -60,7 +60,16 @@ func getCountryElem(country *Country) reflect.Value {
 }
 
 type AutoplayState struct {
-	// TODO fill
+	SeedArtists                   []string
+	Frowns                        []int64
+	SongIDsAlreadySeen            []int64
+	RecentArtists                 map[string]string
+	SecondaryArtistWeightModifier float64
+	SeedArtistWeightRange         []int64
+	WeightModifierRange           []int64
+	MinDuration                   int64
+	MaxDuration                   int64
+	QueuedSongs                   map[string]int64
 }
 
 type Song struct {
