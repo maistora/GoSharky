@@ -202,7 +202,7 @@ func (sharky *Sharky) GetUserInfo() *UserInfo {
 // and either dateEnd or recurring.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) GetUserSubscriptionDetails() *UserSubscriptionInfo {
-	log.Panic("Not impelemented: Service does not have access to this method.")
+	panic(NO_ACCESS_ERR)
 	return nil
 }
 
@@ -321,7 +321,6 @@ func (sharky *Sharky) PingService() string {
 // Describe service methods
 func (sharky *Sharky) GetServiceDescription() *ServiceDescription {
 	// TODO impl
-	log.Panic("Not implemented - too long implementation - left for lager")
 	return nil
 }
 
@@ -433,7 +432,7 @@ func (sharky *Sharky) GetUserIDFromUsername(username string) string {
 }
 
 // Get meta-data information about one or more albums
-func (sharky *Sharky) GetAlbumsInfo(albumIDs string) []AlbumInfo {
+func (sharky *Sharky) GetAlbumsInfo(albumIDs string) []*AlbumInfo {
 	log.Panic(METHOD_NOT_IMPL_ERR)
 	return nil
 }
@@ -450,7 +449,7 @@ func (sharky *Sharky) GetAlbumSongs(albumID string, limit int) []*Song {
 }
 
 // Get meta-data information about one or more artists
-func (sharky *Sharky) GetArtistsInfo(artistIDs string) []ArtistInfo {
+func (sharky *Sharky) GetArtistsInfo(artistIDs string) []*ArtistInfo {
 	log.Panic(METHOD_NOT_IMPL_ERR)
 	return nil
 }
