@@ -133,6 +133,11 @@ func getUserInfoElem(userInfo *UserInfo) reflect.Value {
 	return reflect.ValueOf(userInfo).Elem()
 }
 
+type UserSubscriptionInfo struct {
+	// TODO fill - currently empty because
+	// method that use it are not accessible
+}
+
 type PlaylistInfo struct {
 	PlaylistName        string
 	TSModified          string
