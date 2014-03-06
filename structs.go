@@ -134,7 +134,18 @@ func getUserInfoElem(userInfo *UserInfo) reflect.Value {
 }
 
 type UserSubscriptionInfo struct {
-	// TODO fill
+	UserID     string
+	Email      string
+	FName      string
+	LName      string
+	IsPlus     bool
+	IsAnywhere bool
+	IsPremium  bool
+	Success    bool
+}
+
+func getUserSubscriptionInfoElem(info *UserSubscriptionInfo) reflect.Value {
+	return reflect.ValueOf(info).Elem()
 }
 
 type PlaylistInfo struct {
