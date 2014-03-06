@@ -133,21 +133,6 @@ func getUserInfoElem(userInfo *UserInfo) reflect.Value {
 	return reflect.ValueOf(userInfo).Elem()
 }
 
-type UserSubscriptionInfo struct {
-	UserID     string
-	Email      string
-	FName      string
-	LName      string
-	IsPlus     bool
-	IsAnywhere bool
-	IsPremium  bool
-	Success    bool
-}
-
-func getUserSubscriptionInfoElem(info *UserSubscriptionInfo) reflect.Value {
-	return reflect.ValueOf(info).Elem()
-}
-
 type PlaylistInfo struct {
 	PlaylistName        string
 	TSModified          string
