@@ -11,6 +11,11 @@ Installation
 
     go get github.com/maistora/sharky
 
+Current status
+-------
+
+About 90% of the methods were implemented. There are some methods that I do not have access to, so they are considered unimplementable (for now). Also the Autoplay methods are not ready yet. All the other functionality is implemented.
+
 TODO
 -------
 
