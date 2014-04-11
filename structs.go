@@ -222,5 +222,6 @@ type StreamKey struct {
 }
 
 type Tag struct {
-	// TODO fill
+	id   string
+	name string
 }

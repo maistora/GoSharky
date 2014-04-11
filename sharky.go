@@ -700,7 +700,7 @@ func (sharky *Sharky) getUrl(method string, params map[string]interface{}) strin
 // ================= Users (no auth) =================
 
 // Get playlists created by a userID. Does not require an authenticated session.
-func (sharky *Sharky) GetUserPlaylistsByUserID(userID string, limit int) []Playlist {
+func (sharky *Sharky) GetUserPlaylistsByUserID(userID string, limit int) []*Playlist {
 	panic(NO_ACCESS_ERR)
 	return nil
 }
@@ -801,69 +801,69 @@ func (sharky *Sharky) MarkStreamKeyOver30Secs(streamKey string, streamServerID s
 // and having reached the last second either through seeking or normal playback).
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) MarkSongComplete(songID, streamKey string, streamServerID int, autoplayState AutoplayState) {
-	// TODO impelemnt
+	// TODO impl when the AutoplayState is known
+	panic(METHOD_NOT_IMPL_ERR)
 }
 
 // ================= Autoplay =================
 
 // Grab a relevant song for autoplay
 func (sharky *Sharky) GetAutoplaySong(autoplayState AutoplayState) *Song {
-	// TODO impelemnt
-	return nil
+	// TODO impl when the AutoplayState is known
+	panic(METHOD_NOT_IMPL_ERR)
 }
 
 // Gets a list of tags (stations)
-func (sharky *Sharky) GetAutoplayTags() []Tag {
-	// TODO impelemnt
-	return nil
+func (sharky *Sharky) GetAutoplayTags() []*Tag {
+	panic(NO_ACCESS_ERR)
 }
 
 // Start autoplay using a tag and grab a relevant song
 func (sharky *Sharky) StartAutoplayTag(tagID string) {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 }
 
 // Start autoplay and grab a relevant song
 // TODO check if the params are right
 func (sharky *Sharky) StartAutoplay(artistIDs, songIDs []string) {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 }
 
 // Remove a vote up for a song
 func (sharky *Sharky) RemoveVoteUpAutoplaySong(song Song, autoplayState AutoplayState) {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 }
 
 // Vote up a song
 func (sharky *Sharky) VoteUpAutoplaySong(song Song, autoplayState AutoplayState) {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 }
 
 // Remove a song from the autoplay state
 func (sharky *Sharky) RemoveSongFromAutoplay(song Song, autoplayState AutoplayState) {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 }
 
 // Add a song to the autoplay state
 func (sharky *Sharky) AddSongToAutoplay(song Song, autoplayState AutoplayState) {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 }
 
 // Vote down a song
 func (sharky *Sharky) VoteDownAutoplaySong(song Song, autoplayState AutoplayState) {
-	// TODO imApelemnt
+	panic(NO_ACCESS_ERR)
 }
 
 // Remove a vote down for a song
 func (sharky *Sharky) RemoveVoteDownAutoplaySong(song Song, autoplayState AutoplayState) {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 }
 
 // ================= Tinysong =================
 
 // Get Grooveshark songID for tinysong base 62.
 func (sharky *Sharky) GetSongIDFromTinysongBase62(base62 string) string {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 	return ""
 }
 
@@ -875,5 +875,5 @@ func (sharky *Sharky) GetSongIDFromTinysongBase62(base62 string) string {
 // Passwords must be between 5 and 32 characters.
 // Note: You must provide a sessionID with this method.
 func (sharky *Sharky) RegisterUser(emailAddress, password, fullName, username, gender, birthDate string) {
-	// TODO impelemnt
+	panic(NO_ACCESS_ERR)
 }
