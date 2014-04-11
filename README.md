@@ -13,14 +13,8 @@ Installation
 
 Current status
 -------
+The library is ready to use apart from the methods that I did not have access to. These methods panic with NO_ACCESS_ERR.
 
-About 90% of the methods were implemented. There are some methods that I do not have access to, so they are considered unimplementable (for now). Also the Autoplay methods are not ready yet. All the other functionality is implemented.
-
-TODO
--------
-
-* Implement the rest of the methods
-* Refactoring
 
 Example
 -------  
